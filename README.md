@@ -57,12 +57,16 @@ FoundryGet will detect such invalid dependency chains before installation, and g
 
 ## Installation
 
-Download a Release manually or install as a package.
+Download a Release manually https://github.com/cswendrowski/foundryget/releases
+Or install as a Foundry package from `https://raw.githubusercontent.com/cswendrowski/foundryget/master/module.json`
+
 Unless you want your calls to look like `C:\users\me\downloads\foundryget\FoundryGet.exe -?`, register as a PATH variable
 
 ### PATH variable registration links
 [Windows](https://www.computerhope.com/issues/ch000549.htm)
+
 [Linux](https://opensource.com/article/17/6/set-path-linux)
+
 [Mac](https://stackoverflow.com/questions/7703041/editing-path-variable-on-mac)
 
 ## Usage
