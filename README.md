@@ -2,10 +2,13 @@
 
 The unofficial package manager CLI for FoundryVTT
 
+## Warning!!
+
+This tool directly writes (and overrites) data in your Foundry Data folder. Please make a backup of your systems, modules, and worlds before using
+
 ## Usecases
 
-FoundryVtt's packages have grown in size and complexity. There are currently "Systems", which define a playable set of rules for a tabletop game, and "Modules", which expand on either core Foundry functionality or a System.
-
+FoundryVtt's packages have grown in size and complexity. There are currently "Systems", which define a playable set of rules for a tabletop game, and "Modules", which expand on either core Foundry functionality or a System. As a server owner, managing your installation can get out of hand due to a variety of reasons outlined (and resolved) below:
 
 ### System Dependent Modules
 For Modules that extend a System, such as [13th Age Expanded](https://foundryvtt.com/packages/13th-age-expanded/) (which, obviously, extends 13th Age), the Module can currently define an undocumented `minimumSystemVersion`, but this does not install the System automatically when the Module is installed.
