@@ -45,3 +45,54 @@ Given the previous example modules,
 * Module B depends on Babele version `1.17.0` which in turn depends on Settings Extender version `1.1.0`
 
 FoundryGet will detect this shared dependency, and since Settings Extender `1.1.0` fulfills the dependency of Module A on version `1.1.0`, FoundryGet will install one copy of version `1.1.0`
+
+
+## Installation
+
+Download a Release manually or install as a package.
+Unless you want your calls to look like `C:\users\me\downloads\foundryget\FoundryGet.exe -?`, register as a PATH variable
+
+### PATH variable registration links
+[Windows](https://www.computerhope.com/issues/ch000549.htm)
+[Linux](https://opensource.com/article/17/6/set-path-linux)
+[Mac](https://stackoverflow.com/questions/7703041/editing-path-variable-on-mac)
+
+## Usage
+
+### General
+**Help**
+```
+foundryget -?
+```
+
+### Install
+**Help**
+```
+foundryget install -?
+```
+
+**[As Module] Install**
+```
+foundryget install https://raw.githubusercontent.com/cswendrowski/FoundryVTT-13th-Age-Expanded/master/module.json
+```
+
+**[Downloaded] Install**
+```
+foundryget install https://raw.githubusercontent.com/cswendrowski/FoundryVTT-13th-Age-Expanded/master/module.json -d "C:\Users\Me\AppData\Local\FoundryVTT\Data"
+```
+
+### Install
+**Help**
+```
+foundryget update -?
+```
+
+**[As Module] Update**
+```
+foundryget update
+```
+
+**[Downloaded] Update**
+```
+foundryget update -d "C:\Users\Me\AppData\Local\FoundryVTT\Data"
+```
