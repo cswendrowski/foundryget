@@ -58,7 +58,7 @@ FoundryGet will detect such invalid dependency chains before installation, and g
 ## Installation
 
 Download a Release manually https://github.com/cswendrowski/foundryget/releases
-Or install as a Foundry package from `https://raw.githubusercontent.com/cswendrowski/foundryget/master/module.json`
+[WINDOWS ONLY] Or install as a Foundry package from `https://raw.githubusercontent.com/cswendrowski/foundryget/master/module.json`
 
 Unless you want your calls to look like `C:\users\me\downloads\foundryget\FoundryGet.exe -?`, register as a PATH variable
 
