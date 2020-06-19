@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "FoundryGet": {
+      "commandName": "Project",
+      "commandLineArgs": "install https://raw.githubusercontent.com/cswendrowski/FoundryVTT-13th-Age-Expanded/master/module.json -d \"C:\\Users\\Cody\\AppData\\Local\\FoundryVTT\\Data\""
+    }
+  }
+}
