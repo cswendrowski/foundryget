@@ -47,6 +47,11 @@ Given the previous example modules,
 FoundryGet will detect this shared dependency, and since Settings Extender `1.1.0` fulfills the dependency of Module A on version `1.1.0`, FoundryGet will install one copy of version `1.1.0`
 
 
+### Dependency chains that would break Foundry
+Currently, if Module C depends on Method `DoThing` in Library A version `1.0.0` and Module D depends on the renamed version of that method `ExecuteThingAction` in Library A version `2.0.0`, Foundry will install both packages without complaint, and one or the other will be broken depending on if you have Library A version `1.0.0` or `2.0.0` installed.
+
+FoundryGet will detect such invalid dependency chains before installation, and gracefully exit without installing a setup that would leave one of the Modules in a broken state.
+
 ## Installation
 
 Download a Release manually or install as a package.
@@ -96,3 +101,41 @@ foundryget update
 ```
 foundryget update -d "C:\Users\Me\AppData\Local\FoundryVTT\Data"
 ```
+
+
+## I'm a System / Module developer. How do I setup my Package to use this?
+
+1) Set your manifest.json `version` field to a [Semantic Version 2.0 compatible version](https://semver.org/), such as `1.0.0`
+2) If the version you want to use isn't recognized by Foundry, such as `1.0.0-beta5`, set a Foundry-compatible version such as `beta1.0.0` to the `version` field, and set the Semantic-compatible one to the *new* `semanticVersion` field.
+3) Declare your Dependencies in the *new* `dependencies` field
+
+Your final changes should look something like this:
+```json
+  "semanticVersion": "2.0.0",
+  "version": "2.0.0",
+  "dependencies": [
+    {
+      "name": "archmage",
+      "manifest": "https://gitlab.com/asacolips-projects/foundry-mods/archmage/-/raw/1.5.0/system.json",
+      "version": "1.5.0"
+    }
+  ],
+```
+
+See a full example here: https://github.com/cswendrowski/FoundryVTT-13th-Age-Expanded/blob/master/module.json
+
+## I'm a Library Module / Module developer. Why should I use SemVer?
+
+Let's say you write a cool Logging module. It is invoked by `SuperCoolLogger("this is my log")`. You release it as version `1.0.0`, and Module C and D both use it.
+
+If you decide to rename your method to something less flashy such as `EnhancedLogger("this is my log")` and push it as version `1.0.1` or `1.1.0`, you have *broken the rules of SemVer*. These rules are important because of tools like FoundryGet!
+
+If Module C releases a version `2.0.0` that uses the new `EnhancedLogger` and depends on version `1.1.0`, and Module D doesn't update and stays on `SuperCoolLogger`, FoundryGet (like any SemVer-enabled tool), will look at `1.1.0` and install it as the correct version, update Module C to `2.0.0`, and break Module D in the progress if it's also installed. By releasing version `1.1.0`, you promised SemVer that you didn't break an API, and so FoundryGet believed you. Foundry is now in a broken state (this is no different than what happens under the current built-in package manager)
+
+Given the same update, except you *kept* both methods in existance, then you *have fullfilled your promise*! `1.1.0` will work for both Module C version `2.0.0` calling `EnhancedLogger` and Module D calling `SuperCoolLogger`.
+
+If you do the rename and release it as version `2.0.0` instead, FoundryGet will detect that Module C and D have incompatible dependencies, not update Module C to version `2.0.0`, *and will gracefully exit without breaking the current Foundry install*.
+
+SemVer is a promise, and that promise lets tools be smart about version updates in a way they couldn't be otherwise.
+
+Read more here: https://www.jvandemo.com/a-simple-guide-to-semantic-versioning/
