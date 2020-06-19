@@ -17,7 +17,7 @@ namespace FoundryGet
 
             app.OnExecute(() =>
             {
-                Console.WriteLine("Hello World!");
+                Console.WriteLine("Need help? Run `foundryget -?`");
                 return 0;
             });
 
