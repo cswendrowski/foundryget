@@ -1,3 +1,5 @@
+[![](https://img.shields.io/badge/FoundryGet-compatible-success)](https://github.com/cswendrowski/foundryget)
+
 ![](./foundrygetlogo.png)
 
 The unofficial package manager CLI for FoundryVTT
