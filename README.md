@@ -4,6 +4,57 @@
 
 The unofficial package manager CLI for FoundryVTT
 
+# The FoundryGet Module
+
+## Module Installation
+
+```
+https://raw.githubusercontent.com/cswendrowski/foundryget/master/module.json
+```
+
+## Module API
+
+### Require Module
+
+Checks if module with id `name` exists. If so, checks if `version` is older or equal to the installed version. If either of these is not true, returns false and displays a UI warning.
+
+```js
+requireModule(yourPackageName, yourPackageManifest, name, version)
+```
+
+### Require System Version
+
+Checks if `version` is older or equal to the installed system version. Return true / false based on this, and a UI warning if false.
+
+```js
+requireSystemVersion(yourPackageName, yourPackageManifest, version)
+```
+
+### FoundryGet Ready Hook
+
+Once the API is ready, a `foundryget-ready` hook is fired
+
+### Example
+
+```js
+Hooks.once('foundryget-ready', async function() {
+
+  var systemRequirement = game.foundryGet.requireSystemVersion("npc-chatter", "https://raw.githubusercontent.com/cswendrowski/FoundryVtt-Npc-Chatter/master/module.json", "2.0.0");
+  var chatterRequirement = game.foundryGet.requireModule("npc-chatter", "https://raw.githubusercontent.com/cswendrowski/FoundryVtt-Npc-Chatter/master/module.json", "13a-dark-alleys-compendium", "1.0.0");
+
+  if (!systemRequirement || !chatterRequirement) {
+    // Cancel module initialization
+    return;
+  }
+
+  game.npcChatter = new NpcChatter();
+  console.log("Npc Chatter is now ready");
+  
+});
+```
+
+# The FoundryGet CLI
+
 ## Warning!!
 
 This tool directly writes (and overrites) data in your Foundry Data folder. Please make a backup of your systems, modules, and worlds before using
@@ -57,7 +108,7 @@ Currently, if Module C depends on Method `DoThing` in Library A version `1.0.0` 
 
 FoundryGet will detect such invalid dependency chains before installation, and gracefully exit without installing a setup that would leave one of the Modules in a broken state.
 
-## Installation
+## CLI Installation
 
 Download a Release manually https://github.com/cswendrowski/foundryget/releases
 Or install as a Foundry package from `https://raw.githubusercontent.com/cswendrowski/foundryget/master/module.json`
