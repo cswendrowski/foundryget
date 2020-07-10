@@ -40,9 +40,9 @@ Once the API is ready, a `foundryget-ready` hook is fired
 Hooks.once('foundryget-ready', async function() {
 
   var systemRequirement = game.foundryGet.requireSystemVersion("npc-chatter", "https://raw.githubusercontent.com/cswendrowski/FoundryVtt-Npc-Chatter/master/module.json", "2.0.0");
-  var chatterRequirement = game.foundryGet.requireModule("npc-chatter", "https://raw.githubusercontent.com/cswendrowski/FoundryVtt-Npc-Chatter/master/module.json", "13a-dark-alleys-compendium", "1.0.0");
+  var compendiumRequirement = game.foundryGet.requireModule("npc-chatter", "https://raw.githubusercontent.com/cswendrowski/FoundryVtt-Npc-Chatter/master/module.json", "13a-dark-alleys-compendium", "1.0.0");
 
-  if (!systemRequirement || !chatterRequirement) {
+  if (!systemRequirement || !compendiumRequirement) {
     // Cancel module initialization
     return;
   }
