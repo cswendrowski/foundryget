@@ -14,6 +14,22 @@ https://raw.githubusercontent.com/cswendrowski/foundryget/master/module.json
 
 ## Module API
 
+### Install Module if Missing
+
+Checks if module with id `name` exists. If so, checks if `version` is older or equal to the installed version. If either of these is not true, installs the module from `moduleManifest` and returns false.
+
+```js
+async installModuleIfMissing(moduleName, version, moduleManifest)
+```
+
+### Restart After Install
+
+Returns the game to the Setup screen so that the user may relaunch the world. Required for a module installation to take place.
+
+```js
+restartAfterInstall()
+```
+
 ### Require Module
 
 Checks if module with id `name` exists. If so, checks if `version` is older or equal to the installed version. If either of these is not true, returns false and displays a UI warning.
@@ -34,7 +50,7 @@ requireSystemVersion(yourPackageName, yourPackageManifest, version)
 
 Once the API is ready, a `foundryget-ready` hook is fired
 
-### Example
+### Examples
 
 ```js
 Hooks.once('foundryget-ready', async function() {
@@ -44,6 +60,30 @@ Hooks.once('foundryget-ready', async function() {
 
   if (!systemRequirement || !compendiumRequirement) {
     // Cancel module initialization
+    return;
+  }
+
+  game.npcChatter = new NpcChatter();
+  console.log("Npc Chatter is now ready");
+  
+});
+```
+
+
+```js
+Hooks.once('foundryget-ready', async function() {
+
+  var systemRequirement = game.foundryGet.requireSystemVersion("npc-chatter", "https://raw.githubusercontent.com/cswendrowski/FoundryVtt-Npc-Chatter/master/module.json", "2.0.0");
+
+  if (!systemRequirement) {
+    // Cancel module initialization
+    return;
+  }
+
+  var compendiumWasAlreadyInstalled = game.foundryGet.installModuleIfMissing("13a-dark-alleys-compendium", "1.0.0", "https://github.com/mk572/FoundryVTT-Dark-Alleys-Compendium/releases/download/latest/module.json");
+
+  if (!compendiumWasAlreadyInstalled) {
+    game.foundryGet.restartAfterInstall();
     return;
   }
 

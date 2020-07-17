@@ -2,6 +2,17 @@ class FoundryGet {
 
     // Thanks to Atropos for inspiration: https://gitlab.com/foundrynet/foundryvtt/-/issues/1461#note_365038655
 
+    async installModuleIfMissing(moduleName, version, moduleManifest) {
+        const dependency = game.data.modules.find(x => x.id == moduleName);
+        if (!dependency || isNewerVersion(version, dependency.data.version)) {
+            var message = `Installing module ${moduleName} version ${version}. A restart will be required to activate.`;
+            ui.notifications.info(message);
+            await SetupConfiguration.installPackage({manifest: moduleManifest});
+            return false;
+        }
+        return true;
+    }
+
     requireModule(yourPackageName, yourPackageManifest, name, version) {
         const dependency = game.data.modules.find(x => x.id == name);
         if (!dependency || isNewerVersion(version, dependency.data.version)) {
@@ -19,6 +30,10 @@ class FoundryGet {
             return false;
         }
         return true;
+    }
+
+    restartAfterInstall() {
+        game.shutDown();
     }
 }
 

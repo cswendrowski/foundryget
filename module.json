@@ -2,11 +2,11 @@
   "name": "foundryget",
   "title": "FoundryGet Package Manager",
   "description": "The unofficial package manager CLI for FoundryVTT ",
-  "semanticVersion": "1.0.0",
-  "version": "1.0.0",
+  "semanticVersion": "1.2.0",
+  "version": "1.2.0",
   "dependencies": [],
-  "minimumCoreVersion": "0.6.0",
-  "compatibleCoreVersion": "0.6.4",
+  "minimumCoreVersion": "0.7.0",
+  "compatibleCoreVersion": "0.7.0",
   "author": "Cody Swendrowski <cody@swendrowski.us>",
   "scripts": [
     "/scripts/foundryget.js"
@@ -16,5 +16,5 @@
   "packs": [],
   "url": "https://github.com/cswendrowski/FoundryVTT-13th-Age-Expanded",
   "manifest": "https://raw.githubusercontent.com/cswendrowski/foundryget/master/module.json",
-  "download": "https://github.com/cswendrowski/foundryget/releases/download/1.0.0/module.zip"
+  "download": "https://github.com/cswendrowski/foundryget/releases/download/1.2.0/module.zip"
 }
