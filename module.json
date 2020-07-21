@@ -5,7 +5,7 @@
   "semanticVersion": "1.2.0",
   "version": "1.2.0",
   "dependencies": [],
-  "minimumCoreVersion": "0.7.0",
+  "minimumCoreVersion": "1.6.2",
   "compatibleCoreVersion": "0.7.0",
   "author": "Cody Swendrowski <cody@swendrowski.us>",
   "scripts": [
