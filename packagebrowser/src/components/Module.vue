@@ -7,6 +7,12 @@
         <h4>Author(s): {{ module.author }}</h4>
         <p v-html="module.description"></p>
     </v-card-text>
+    <v-card-text v-if="hasLanguages">
+      <v-chip class="languageChip" v-for="language in languages" :key="language">
+        <v-icon size="1.5em" left>mdi-translate</v-icon>
+        {{ language }}
+      </v-chip>
+    </v-card-text>
     <v-card-actions>
           <v-btn
             text
@@ -65,6 +71,8 @@
 </template>
 
 <script>
+import { getByTag } from 'locale-codes';
+
 export default {
   name: "Module",
   props: {
@@ -102,6 +110,19 @@ export default {
         else {
           return "white";
         }
+      },
+      languages() {
+        let languages = [];
+        this.module.languages.forEach(language => {
+          languages.push(getByTag(language.lang)?.local || getByTag(language.lang)?.name || language.name || language.lang);
+        })
+        return languages;
+      },
+      hasLanguages() {
+        if (this.module.languages && this.module.languages.length !== 0) {
+          return true;
+        }
+        return false;
       }
   },
 
@@ -124,5 +145,8 @@ li {
 }
 a {
   color: #42b983;
+}
+span.languageChip {
+  margin-right: 5px;
 }
 </style>
