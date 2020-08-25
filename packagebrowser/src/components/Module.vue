@@ -1,152 +1,232 @@
 <template>
+<div class="rel">
+	<v-hover
+		v-slot:default="{ hover }"
+		>
+		<v-card 
+			class="mx-auto"
+			:class="{ 'on-hover': hover }"
+			>
+			<header class="pkg-header" :class="typeClass">
+				<v-card-title>{{ module.title }}</v-card-title>
+				<v-card-subtitle>{{module.type}} - v{{ module.version }}</v-card-subtitle>
+				<figure class="ribbon"></figure>
+			</header>
+				<v-card-text style="padding-top: 10px;">
+					<h4>Author(s): {{ module.author }}</h4>
+					<p class="short-desc" v-html="module.description"></p>
+					<p class="long-desc" v-html="module.longDescription"></p>
+				</v-card-text>
+			<v-card-text v-if="hasLanguages">
+				<v-chip class="languageChip" v-for="language in languages" :key="language">
+					<v-icon size="1.5em" left>mdi-translate</v-icon>
+					{{ language }}
+				</v-chip>
+			</v-card-text>
+			<v-card-actions>
+				<v-btn
+					text
+					v-bind:href="module.foundryUrl"
+					target="_blank"
+				>Project</v-btn>
 
-  <v-card class="mx-auto"  >
-    <v-card-title :class="color">{{ module.title }}</v-card-title>
-    <v-card-subtitle :class="color">{{module.type}} - v{{ module.version }}</v-card-subtitle>
-    <v-card-text style="padding-top: 10px;">
-        <h4>Author(s): {{ module.author }}</h4>
-        <p v-html="module.description"></p>
-    </v-card-text>
-    <v-card-text v-if="hasLanguages">
-      <v-chip class="languageChip" v-for="language in languages" :key="language">
-        <v-icon size="1.5em" left>mdi-translate</v-icon>
-        {{ language }}
-      </v-chip>
-    </v-card-text>
-    <v-card-actions>
-          <v-btn
-            text
-            color="primary"
-            v-bind:href="module.foundryUrl"
-            target="_blank"
-          >Project</v-btn>
+				<v-spacer></v-spacer>
+				
+				<v-btn
+					text
+					v-bind:href="foundryPackageUrl"
+					target="_blank"
+				>Package</v-btn>
 
-          <v-spacer></v-spacer>
-          
-          <v-btn
-            text
-            color="primary"
-            v-bind:href="foundryPackageUrl"
-            target="_blank"
-          >Package</v-btn>
+				<v-spacer></v-spacer>
 
-          <v-spacer></v-spacer>
+					<v-btn
+						icon
+						@click="show = !show"
+					>
+						<v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+					</v-btn>
+			</v-card-actions>
 
-            <v-btn
-                icon
-                @click="show = !show"
-            >
-                <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-            </v-btn>
-        </v-card-actions>
+			<v-expand-transition>
+				<div v-show="show">
+					<v-divider></v-divider>
 
-        <v-expand-transition>
-            <div v-show="show">
-                <v-divider></v-divider>
+					<v-btn
+						text
+						v-bind:href="module.manifest"
+						target="_blank"
+					>Manifest</v-btn>
 
-                <v-btn
-                    text
-                    v-bind:href="module.manifest"
-                    target="_blank"
-                >Manifest</v-btn>
+					<!-- <v-btn
+						:loading="loading"
+						:disabled="loading"
+						color="blue-grey"
+						class="ma-2 white--text"
+						@click="loader = 'loading'"
+						>
+						ZIP
+						<v-icon right dark>mdi-cloud-download</v-icon>
+					</v-btn> -->
 
-                <!-- <v-btn
-                    :loading="loading"
-                    :disabled="loading"
-                    color="blue-grey"
-                    class="ma-2 white--text"
-                    @click="loader = 'loading'"
-                    >
-                    ZIP
-                    <v-icon right dark>mdi-cloud-download</v-icon>
-                </v-btn> -->
+					<v-card-text>
 
-                <v-card-text>
-
-                <b>Compatible Foundry Versions: </b><span>v{{ module.minimumCoreVersion }} - v{{ module.compatibleCoreVersion }}</span>
-                </v-card-text>
-            </div>
-        </v-expand-transition>
-  </v-card>
+					<b>Compatible Foundry Versions: </b><span>v{{ module.minimumCoreVersion }} - v{{ module.compatibleCoreVersion }}</span>
+					</v-card-text>
+				</div>
+			</v-expand-transition>
+		</v-card>
+	</v-hover>
+</div>
 </template>
 
 <script>
 import { getByTag } from 'locale-codes';
 
 export default {
-  name: "Module",
-  props: {
-    module: Object
-  },
+	name: "Module",
+	props: {
+		module: Object
+	},
 
-  data: () => ({
-    show: false,
-    loader: null,
-    loading: false
-  }),
+	data: () => ({
+		show: false,
+		loader: null,
+		loading: false
+	}),
 
-  watch: {
-    loader () {
-      const l = this.loader
-      this[l] = !this[l]
+	watch: {
+		loader () {
+			const l = this.loader
+			this[l] = !this[l]
 
-      setTimeout(() => (this[l] = false), 3000)
+			setTimeout(() => (this[l] = false), 3000)
 
-      this.loader = null
-    }
-  },
+			this.loader = null
+		}
+	},
 
-  computed: {
-      foundryPackageUrl() {
-          return "https://foundryvtt.com" + this.module.foundryUrl;
-      },
-      color() {
-        if (this.module.type == "Module") {
-          return "orange";
-        }
-        else if (this.module.type == "System") {
-          return "blue";
-        }
-        else {
-          return "white";
-        }
-      },
-      languages() {
-        let languages = [];
-        this.module.languages.forEach(language => {
-          languages.push(getByTag(language.lang)?.local || getByTag(language.lang)?.name || language.name || language.lang);
-        })
-        return languages;
-      },
-      hasLanguages() {
-        if (this.module.languages && this.module.languages.length !== 0) {
-          return true;
-        }
-        return false;
-      }
-  },
+	computed: {
+		foundryPackageUrl() {
+				return "https://foundryvtt.com" + this.module.foundryUrl;
+		},
+		typeClass() {
+			return {
+				"Module": "typ-module",
+				"System": "typ-system"
+			}[this.module.type] || "typ-none";
+		},
+		languages() {
+			let languages = [];
+			this.module.languages.forEach(language => {
+				languages.push(getByTag(language.lang)?.local || getByTag(language.lang)?.name || language.name || language.lang);
+			})
+			return languages;
+		},
+		hasLanguages() {
+			if (this.module.languages && this.module.languages.length !== 0) {
+				return true;
+			}
+			return false;
+		}
+	},
 
-  
+	
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+.rel {
+	position: relative;
+	min-height: 300px;
+	.v-card {
+		position: absolute;
+		top: 0;
+		width: 100%;
+		min-height: 300px;
+		max-height: 900px;
+		box-shadow: none;
+		transition: .2s box-shadow;
+		background-color: var(--v-accent-base);
+		
+		.pkg-header {
+			position: relative;
+			background-color: var(--v-primary-base);
+			
+			.ribbon {
+				box-shadow: -2px 0 5px 1px var(--shadow-color);
+				position: absolute;
+				display: block;
+				width: 30px;
+				height: calc(100% - 2px);
+				background-color: var(--shadow-color);
+				top: 1px;
+				right: 0px;
+			}
+		}
+
+		.typ-module {
+			--shadow-color: #774d00;
+		}
+		.typ-system {
+			--shadow-color: #338
+		}
+		.typ-none {
+			--shadow-color: #BBB;
+		}
+
+		.long-desc {
+			overflow-y: scroll;
+			height: 0px;
+			visibility: hidden;
+			transition: .5s height;
+		}
+		.long-desc::-webkit-scrollbar {
+			width: 4px;
+		}
+		.long-desc::-webkit-scrollbar-track,
+		.long-desc::-webkit-scrollbar-track-piece {
+			background-color: var(--v-secondary-base);
+		}
+		.long-desc::-webkit-scrollbar-thumb {
+			background-color: var(--v-primary-base);
+		}
+		.short-desc {
+			display: block;
+		}
+
+		.v-btn {
+			color: #999;
+		}
+	}
+	.v-card.on-hover {
+		z-index: 1;
+		box-shadow: 0 3px 10px 2px #000000a6;
+		.long-desc {
+			visibility: visible;
+			height: 400px;
+		}
+		.short-desc {
+			display: none;
+		}
+	}
+}
 h3 {
-  margin: 40px 0 0;
+	margin: 40px 0 0;
 }
 ul {
-  list-style-type: none;
-  padding: 0;
+	list-style-type: none;
+	padding: 0;
 }
 li {
-  display: inline-block;
-  margin: 0 10px;
+	display: inline-block;
+	margin: 0 10px;
 }
 a {
-  color: #42b983;
+	color: #42b983;
 }
 span.languageChip {
-  margin-right: 5px;
+	margin-right: 5px;
 }
 </style>

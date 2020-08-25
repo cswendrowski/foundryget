@@ -3,21 +3,12 @@
     <v-app-bar app color="primary" dark>
       <div class="d-flex align-center">
         <v-img
-          alt="Vuetify Logo"
+          alt="The Forge Logo"
           class="shrink mr-2"
           contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
+          src="https://forge-vtt.com/images/the-forge-banner-960x320.png"
           transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
+          width="150"
         />
       </div>
 
@@ -38,7 +29,11 @@
     </v-main>
   </v-app>
 </template>
-
+<style lang="scss">
+  .v-main {
+    background-color: var(--v-secondary-base);
+  }
+</style>
 <script>
 import Modules from "./components/Modules";
 
