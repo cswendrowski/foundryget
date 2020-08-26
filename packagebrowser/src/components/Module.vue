@@ -14,8 +14,8 @@
 			</header>
 				<v-card-text style="padding-top: 10px;">
 					<h4>Author(s): {{ module.author }}</h4>
-					<p class="short-desc" v-html="module.description"></p>
-					<p class="long-desc" v-html="module.longDescription"></p>
+					<p class="desc" v-html="module.description"></p>
+					<!--<p class="long-desc" v-html="module.longDescription"></p>-->
 				</v-card-text>
 			<v-card-text v-if="hasLanguages">
 				<v-chip class="languageChip" v-for="language in languages" :key="language">
@@ -139,13 +139,13 @@ export default {
 <style scoped lang="scss">
 .rel {
 	position: relative;
-	min-height: 300px;
+	min-height: 20em;
 	.v-card {
 		position: absolute;
 		top: 0;
 		width: 100%;
-		min-height: 300px;
-		max-height: 900px;
+		min-height: 15em;
+		max-height: 35em;
 		box-shadow: none;
 		transition: .2s box-shadow;
 		background-color: var(--v-accent-base);
@@ -176,25 +176,25 @@ export default {
 			--shadow-color: #BBB;
 		}
 
-		.long-desc {
-			overflow-y: scroll;
-			height: 0px;
-			visibility: hidden;
+		.desc {
+			line-height: 1.5em;
+			overflow-y: hidden;
+			height: 4.5em;
 			transition: .5s height;
 		}
-		.long-desc::-webkit-scrollbar {
+		.desc::-webkit-scrollbar {
 			width: 4px;
 		}
-		.long-desc::-webkit-scrollbar-track,
-		.long-desc::-webkit-scrollbar-track-piece {
+		.desc::-webkit-scrollbar-track,
+		.desc::-webkit-scrollbar-track-piece {
 			background-color: var(--v-secondary-base);
 		}
-		.long-desc::-webkit-scrollbar-thumb {
+		.desc::-webkit-scrollbar-thumb {
 			background-color: var(--v-primary-base);
 		}
-		.short-desc {
+		/*.short-desc {
 			display: block;
-		}
+		}*/
 
 		.v-btn {
 			color: #999;
@@ -203,13 +203,13 @@ export default {
 	.v-card.on-hover {
 		z-index: 1;
 		box-shadow: 0 3px 10px 2px #000000a6;
-		.long-desc {
-			visibility: visible;
-			height: 400px;
+		.desc {
+			overflow-y: scroll;
+			height: 15em;
 		}
-		.short-desc {
+		/*.short-desc {
 			display: none;
-		}
+		}*/
 	}
 }
 h3 {
