@@ -5,7 +5,11 @@
 		<v-card class="mx-auto" :class="{ 'on-hover': hover }">
 			<header class="pkg-header" :class="typeClass">
 				<v-card-title>{{ module.title }}</v-card-title>
-				<v-card-subtitle>{{module.type}} - v{{ module.version }}</v-card-subtitle>
+				<v-card-subtitle>
+					<span class="pkg-type">{{module.type}}</span>
+					-
+					<span class="pkg-ver">v{{ module.version }}</span>
+				</v-card-subtitle>
 				<figure class="ribbon"></figure>
 			</header>
 			<main>
@@ -100,70 +104,115 @@ export default {
 <style scoped lang="scss">
 .rel {
 	position: relative;
-	min-height: 20em;
+	height: 12em;
+	margin-bottom: 2em;
+
 	.v-card {
+		--radius: 10px;
 		position: absolute;
 		top: 0;
 		width: 100%;
-		min-height: 15em;
-		max-height: 35em;
+		height: 12em;
 		box-shadow: none;
 		transition: .2s box-shadow;
 		background-color: var(--v-accent-base);
-		
-		.pkg-header {
-			position: relative;
-			background-color: var(--v-primary-base);
-			
-			.ribbon {
-				box-shadow: -2px 0 5px 1px var(--shadow-color);
-				position: absolute;
-				display: block;
-				width: 30px;
-				height: calc(100% - 2px);
-				background-color: var(--shadow-color);
-				top: 1px;
-				right: 0px;
-			}
-		}
-
-		.typ-module {
-			--shadow-color: #774d00;
-		}
-		.typ-system {
-			--shadow-color: #338
-		}
-		.typ-none {
-			--shadow-color: #BBB;
-		}
-
-		.desc {
-			line-height: 1.5em;
-			overflow-y: hidden;
-			height: 4.5em;
-			transition: .5s height;
-		}
-		.desc::-webkit-scrollbar {
-			width: 4px;
-		}
-		.desc::-webkit-scrollbar-track,
-		.desc::-webkit-scrollbar-track-piece {
-			background-color: var(--v-secondary-base);
-		}
-		.desc::-webkit-scrollbar-thumb {
-			background-color: var(--v-primary-base);
-		}
+		border-radius: var(--radius);
+		--height-trans: .5s height;
+		transition: .5s box-shadow,  var(--height-trans);
 
 		.v-btn {
 			color: #999;
 		}
+
+		.typ-module {
+			--color: #774d00;
+		}
+		.typ-system {
+			--color: #338
+		}
+		.typ-world {
+			--color: #151
+		}
+		.typ-none {
+			--color: #BBB;
+		}
+		header.pkg-header {
+			height: 4.5em;
+			position: relative;
+			background-color: var(--v-primary-base);
+
+			.v-card__title {
+				margin-top: 0;
+				line-height: 1em;
+			}
+			.v-card__subtitle {
+				margin-top: -1em;
+				line-height: 1em;
+			}
+
+			.pkg-type {
+				margin-left: -2px;
+				display: inline-block;
+				padding: 6px;
+				background-color: var(--color);
+				border-radius: var(--radius);
+			}
+			
+			.ribbon {
+				box-shadow: -2px 0 5px 1px var(--color);
+				position: absolute;
+				display: block;
+				width: 30px;
+				height: calc(100% - 2px);
+				background-color: var(--color);
+				top: 1px;
+				right: 0px;
+				border-radius: 0 var(--radius) 0 0;
+			}
+		}
+
+		main {
+			line-height: 1.5em;
+			overflow-y: hidden;
+			height: 7.5em;
+			transition: var(--height-trans);
+
+			.desc {
+				overflow-y: hidden;
+				height: 3em;
+			}
+
+			.desc::-webkit-scrollbar {
+				width: 4px;
+			}
+			.desc::-webkit-scrollbar-track,
+			.desc::-webkit-scrollbar-track-piece {
+				background-color: var(--v-secondary-base);
+			}
+			.desc::-webkit-scrollbar-thumb {
+				background-color: var(--v-primary-base);
+			}
+		}
+		footer {
+			height: 0em;
+			overflow: hidden;
+			transition: var(--height-trans);
+		}
 	}
+	
 	.v-card.on-hover {
 		z-index: 1;
 		box-shadow: 0 3px 10px 2px #000000a6;
-		.desc {
-			overflow-y: scroll;
+		height: 24em;
+		footer {
+			height: 4.5em;
+		}
+		main {
 			height: 15em;
+			.desc {
+				height: 100%;
+				overflow-y: scroll;
+			}
 		}
 	}
 }
