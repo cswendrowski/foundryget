@@ -12,7 +12,6 @@
 				<v-card-text style="padding-top: 10px;">
 					<h4>Author(s): {{ module.author }}</h4>
 					<p class="desc" v-html="module.description"></p>
-					<!--<p class="long-desc" v-html="module.longDescription"></p>-->
 				</v-card-text>
 				<v-card-text v-if="hasLanguages">
 					<v-chip class="languageChip" v-for="language in languages" :key="language">
@@ -25,27 +24,12 @@
 				<v-btn text v-bind:href="module.foundryUrl" target="_blank">
 					Project
 				</v-btn>
-				
 				<v-btn text v-bind:href="foundryPackageUrl" target="_blank">
 					Package
 				</v-btn>
-
-
 				<v-btn text v-bind:href="module.manifest" target="_blank">
 					Manifest
 				</v-btn>
-
-				<!-- <v-btn
-					:loading="loading"
-					:disabled="loading"
-					color="blue-grey"
-					class="ma-2 white--text"
-					@click="loader = 'loading'"
-					>
-					ZIP
-					<v-icon right dark>mdi-cloud-download</v-icon>
-				</v-btn> -->
-
 				<v-card-text>
 					<strong>Compatible Foundry Versions:</strong>
 					<span>v{{ module.minimumCoreVersion }} - v{{ module.compatibleCoreVersion }}</span>
@@ -169,9 +153,6 @@ export default {
 		.desc::-webkit-scrollbar-thumb {
 			background-color: var(--v-primary-base);
 		}
-		/*.short-desc {
-			display: block;
-		}*/
 
 		.v-btn {
 			color: #999;
@@ -184,9 +165,6 @@ export default {
 			overflow-y: scroll;
 			height: 15em;
 		}
-		/*.short-desc {
-			display: none;
-		}*/
 	}
 }
 h3 {
