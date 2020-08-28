@@ -1,87 +1,89 @@
 <template>
-<div class="rel">
-	<v-hover
-		v-slot:default="{ hover }"
-		>
-		<v-card 
-			class="mx-auto"
-			:class="{ 'on-hover': hover }"
+<lazy-component>
+	<div class="rel">
+		<v-hover
+			v-slot:default="{ hover }"
 			>
-			<header class="pkg-header" :class="typeClass">
-				<v-card-title>{{ module.title }}</v-card-title>
-				<v-card-subtitle>{{module.type}} - v{{ module.latest }}</v-card-subtitle>
-				<figure class="ribbon"></figure>
-			</header>
-				<v-card-text style="padding-top: 10px;">
-					<h4>Author(s): {{ module.author }}</h4>
-					<p class="desc" v-html="module.description"></p>
-					<!--<p class="long-desc" v-html="module.longDescription"></p>-->
+			<v-card 
+				class="mx-auto"
+				:class="{ 'on-hover': hover }"
+				>
+				<header class="pkg-header" :class="typeClass">
+					<v-card-title>{{ module.title }}</v-card-title>
+					<v-card-subtitle>{{module.type}} - v{{ module.latest }}</v-card-subtitle>
+					<figure class="ribbon"></figure>
+				</header>
+					<v-card-text style="padding-top: 10px;">
+						<h4>Author(s): {{ module.author }}</h4>
+						<p class="desc" v-html="module.description"></p>
+						<!--<p class="long-desc" v-html="module.longDescription"></p>-->
+					</v-card-text>
+				<v-card-text v-if="hasLanguages">
+					<v-chip class="languageChip" v-for="language in languages" :key="language">
+						<v-icon size="1.5em" left>mdi-translate</v-icon>
+						{{ language }}
+					</v-chip>
 				</v-card-text>
-			<v-card-text v-if="hasLanguages">
-				<v-chip class="languageChip" v-for="language in languages" :key="language">
-					<v-icon size="1.5em" left>mdi-translate</v-icon>
-					{{ language }}
-				</v-chip>
-			</v-card-text>
-			<v-card-actions>
-				<v-btn
-					text
-					v-bind:href="module.url"
-					target="_blank"
-				>Project</v-btn>
-
-				<v-spacer></v-spacer>
-				
-				<v-btn
-					text
-					v-bind:href="foundryPackageUrl"
-					target="_blank"
-				>Package</v-btn>
-
-				<v-spacer></v-spacer>
-
-					<v-btn
-						icon
-						@click="show = !show"
-					>
-						<v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-					</v-btn>
-			</v-card-actions>
-
-			<v-expand-transition>
-				<div v-show="show">
-					<v-divider></v-divider>
-
+				<v-card-actions>
 					<v-btn
 						text
-						v-bind:href="module.manifest"
+						v-bind:href="module.url"
 						target="_blank"
-					>Manifest</v-btn>
+					>Project</v-btn>
 
-					<!-- <v-btn
-						:loading="loading"
-						:disabled="loading"
-						color="blue-grey"
-						class="ma-2 white--text"
-						@click="loader = 'loading'"
+					<v-spacer></v-spacer>
+					
+					<v-btn
+						text
+						v-bind:href="foundryPackageUrl"
+						target="_blank"
+					>Package</v-btn>
+
+					<v-spacer></v-spacer>
+
+						<v-btn
+							icon
+							@click="show = !show"
 						>
-						ZIP
-						<v-icon right dark>mdi-cloud-download</v-icon>
-					</v-btn> -->
+							<v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+						</v-btn>
+				</v-card-actions>
 
-					<v-card-text>
+				<v-expand-transition>
+					<div v-show="show">
+						<v-divider></v-divider>
 
-					<!-- 
-						not in forge api, should probably lazyload on expansion
+						<v-btn
+							text
+							v-bind:href="module.manifest"
+							target="_blank"
+						>Manifest</v-btn>
 
-						<b>Compatible Foundry Versions: </b><span>v{{ module.minimumCoreVersion }} - v{{ module.compatibleCoreVersion }}</span> 
-					-->
-					</v-card-text>
-				</div>
-			</v-expand-transition>
-		</v-card>
-	</v-hover>
-</div>
+						<!-- <v-btn
+							:loading="loading"
+							:disabled="loading"
+							color="blue-grey"
+							class="ma-2 white--text"
+							@click="loader = 'loading'"
+							>
+							ZIP
+							<v-icon right dark>mdi-cloud-download</v-icon>
+						</v-btn> -->
+
+						<v-card-text>
+
+						<!-- 
+							not in forge api, should probably lazyload on expansion
+
+							<b>Compatible Foundry Versions: </b><span>v{{ module.minimumCoreVersion }} - v{{ module.compatibleCoreVersion }}</span> 
+						-->
+						</v-card-text>
+					</div>
+				</v-expand-transition>
+			</v-card>
+		</v-hover>
+	</div>
+</lazy-component>
 </template>
 
 <script>

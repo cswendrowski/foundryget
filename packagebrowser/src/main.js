@@ -1,6 +1,7 @@
 import Vue from "vue";
 import App from "./App.vue";
 import vuetify from "./plugins/vuetify";
+import './plugins/v-lazy-component';
 // import axios from "axios";
 
 Vue.config.productionTip = false;
