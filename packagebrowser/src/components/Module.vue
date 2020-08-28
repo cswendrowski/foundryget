@@ -2,7 +2,7 @@
 
 <div class="rel">
 	<v-hover v-slot:default="{ hover }">
-		<v-card class="mx-auto" :class="{ 'on-hover': hover }">
+		<v-card class="mx-auto" :class="{ 'on-hover': hover, 'active': module.cardActive }" @click.stop="toggle($event, module)">
 			<header class="pkg-header" :class="typeClass">
 				<v-card-title>{{ module.title }}</v-card-title>
 				<v-card-subtitle>
@@ -54,6 +54,7 @@ import { getByTag } from 'locale-codes';
 export default {
 	name: "Module",
 	props: {
+		modules: Array,
 		module: Object
 	},
 
@@ -101,31 +102,39 @@ export default {
 			return false;
 		}
 	},
-
-	
+	methods: {
+		toggle: function(event, module) {
+			const state = module.cardActive;
+			this.modules.forEach(m => m.cardActive = false);
+			module.cardActive = !state;
+		}
+	}
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 $radius: 10px;
+$trans-dur: .5s;
+$size-trans: $trans-dur height, $trans-dur width;
 
 .rel {
 	position: relative;
 	height: 12em;
-	margin-bottom: 2em;
 
 	.v-card {
 		position: absolute;
 		top: 0;
+		right: 0;
 		width: 100%;
+		max-width: 55ch;
 		height: 12em;
 		box-shadow: none;
 		transition: .2s box-shadow;
 		background-color: var(--v-accent-base);
 		border-radius: $radius;
-		--height-trans: .5s height;
-		transition: .5s box-shadow,  var(--height-trans);
+		z-index: 0;
+		transition: $trans-dur box-shadow,  $size-trans, 0s $trans-dur z-index;
 
 		.v-btn {
 			color: #999;
@@ -148,13 +157,23 @@ $radius: 10px;
 			position: relative;
 			background-color: var(--v-primary-base);
 
-			.v-card__title {
-				margin-top: 0;
-				line-height: 1em;
-			}
-			.v-card__subtitle {
-				margin-top: -1em;
-				line-height: 1em;
+			.v-card {
+				&__title {
+					font-size: 1.1em;
+					margin-top: 0;
+					line-height: 1em;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					white-space: nowrap;
+					width: calc(100% - 30px);
+					display: inline-block;
+				}
+				&__subtitle {
+					line-height: 1em;
+					margin: 0 {
+						top: -1.3em;
+					}
+				}
 			}
 
 			.pkg-type {
@@ -181,7 +200,7 @@ $radius: 10px;
 			line-height: 1.5em;
 			overflow-y: hidden;
 			height: 7.5em;
-			transition: var(--height-trans);
+			transition: $size-trans;
 
 			.desc {
 				overflow-y: hidden;
@@ -202,12 +221,15 @@ $radius: 10px;
 		footer {
 			height: 0em;
 			overflow: hidden;
-			transition: var(--height-trans);
+			transition: $size-trans;
 		}
-		&.on-hover {
-			z-index: 1;
-			box-shadow: 0 3px 10px 2px #000000a6;
+		&.active {
+			width: 55ch;
 			height: 24em;
+			z-index: 1;
+			box-shadow: 0 3px 5px 2px #000000a6;
+			transition: $trans-dur box-shadow, $size-trans, 0s 0s z-index;
+
 			footer {
 				height: 4.5em;
 			}
@@ -218,6 +240,9 @@ $radius: 10px;
 					overflow-y: scroll;
 				}
 			}
+		}
+		&.on-hover {
+			box-shadow: 0 3px 10px 2px #000000a6;
 		}
 	}
 }

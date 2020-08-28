@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <v-container>
+    <v-container @click="closeAll">
       <v-card class="sidebar-wrapper">
         <menu class="fixed">
           <v-navigation-drawer height="calc(100vh - 92px)" color="accent">
@@ -89,7 +89,8 @@
               sm="12"
             >
                 <Module
-                    v-bind:module="item"
+                    :module="item"
+                    :modules="props.items"
                 />
             </v-col>
           </v-row>
@@ -198,7 +199,11 @@ export default {
       items: [],
     };
   },
-
+  methods: {
+    closeAll: function() {
+      this.items.forEach(i => i.cardActive = false);
+    }
+  },
   mounted() {
     console.log("Mounted");
 
@@ -211,6 +216,8 @@ export default {
         let modules = [];
         let systems = [];
         response.data.packages.forEach(Package => {
+          Package.cardActive = false;
+
           if (Package.type === "system") {
             systems.push(Package);
           } else if (Package.type === "module") {
