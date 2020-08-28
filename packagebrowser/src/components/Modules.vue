@@ -196,28 +196,26 @@ export default {
 
   mounted() {
     console.log("Mounted");
-    axios
-      .get(
-        "https://raw.githubusercontent.com/ardittristan/FoundryAPI/api/modules.json"
-      )
-      .then(response => {
-        console.log(response.data.modules);
-        this.modules = response.data.modules;
-        response.data.modules.forEach(x => x.type = "Module");
-        // response.data.modules.forEach(m => m.longDescription = filler);  // Temporary, adds a filler long description
-        this.items = this.items.concat(response.data.modules);
-      });
 
     axios
       .get(
-        "https://raw.githubusercontent.com/ardittristan/FoundryAPI/api/systems.json"
+        "https://dev.forge-vtt.com/api/bazaar"
       )
       .then(response => {
-        console.log(response.data.modules);
-        this.systems = response.data.modules;
-        response.data.modules.forEach(x => x.type = "System");
-        this.items = this.items.concat(response.data.modules);
-      });
+        console.log(response.data.packages);
+        let modules = [];
+        let systems = [];
+        response.data.packages.forEach(Package => {
+          if (Package.type === "system") {
+            systems.push(Package);
+          } else if (Package.type === "module") {
+            modules.push(Package);
+          }
+        })
+        this.modules = modules;
+        this.systems = systems;
+        this.items = this.items.concat(response.data.packages);
+      })
     
   },
 

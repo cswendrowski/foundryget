@@ -8,7 +8,7 @@
 				<v-card-subtitle>
 					<span class="pkg-type">{{module.type}}</span>
 					-
-					<span class="pkg-ver">v{{ module.version }}</span>
+					<span class="pkg-ver">v{{ module.latest }}</span>
 				</v-card-subtitle>
 				<figure class="ribbon"></figure>
 			</header>
@@ -25,7 +25,7 @@
 				</v-card-text>
 			</main>
 			<footer>
-				<v-btn text v-bind:href="module.foundryUrl" target="_blank">
+				<v-btn text v-bind:href="module.url" target="_blank">
 					Project
 				</v-btn>
 				<v-btn text v-bind:href="foundryPackageUrl" target="_blank">
@@ -35,8 +35,11 @@
 					Manifest
 				</v-btn>
 				<v-card-text>
+				<!-- 
+					// not in forge api, should probably lazyload on expansion
 					<strong>Compatible Foundry Versions:</strong>
 					<span>v{{ module.minimumCoreVersion }} - v{{ module.compatibleCoreVersion }}</span>
+				-->
 				</v-card-text>
 			</footer>
 		</v-card>
@@ -73,18 +76,21 @@ export default {
 
 	computed: {
 		foundryPackageUrl() {
-				return "https://foundryvtt.com" + this.module.foundryUrl;
+				return `https://foundryvtt.com/packages/${this.module.name}/`;
 		},
 		typeClass() {
 			return {
-				"Module": "typ-module",
-				"System": "typ-system"
+				"module": "typ-module",
+				"system": "typ-system"
 			}[this.module.type] || "typ-none";
 		},
 		languages() {
 			let languages = [];
 			this.module.languages.forEach(language => {
-				languages.push(getByTag(language.lang)?.local || getByTag(language.lang)?.name || language.name || language.lang);
+				let languageTag = getByTag(language.lang)?.local || getByTag(language.lang)?.name || language.name || language.lang;
+				if (!languages.includes(languageTag)) {
+					languages.push(languageTag);
+				}
 			})
 			return languages;
 		},
