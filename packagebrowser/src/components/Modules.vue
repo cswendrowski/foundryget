@@ -1,7 +1,9 @@
 <template>
   <div class="hello">
     <v-container>
-
+      <v-navigation-drawer height="calc(100vh - 82px)" color="accent">
+        <!-- Placeholder -->
+      </v-navigation-drawer>
 
       <v-data-iterator
         :items="items"
@@ -229,6 +231,23 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+.container {
+  display: flex;
+  flex-direction: row;
+
+  .v-navigation-drawer {
+    height: 70vh;
+    flex: 0 0 256px;
+    margin: {
+      right: 20px;
+    }
+  }
+  .v-data-iterator {
+    flex: 1;
+  }
+}
+
+
 h3 {
   margin: 40px 0 0;
 }

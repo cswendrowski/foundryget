@@ -108,13 +108,14 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+$radius: 10px;
+
 .rel {
 	position: relative;
 	height: 12em;
 	margin-bottom: 2em;
 
 	.v-card {
-		--radius: 10px;
 		position: absolute;
 		top: 0;
 		width: 100%;
@@ -122,7 +123,7 @@ export default {
 		box-shadow: none;
 		transition: .2s box-shadow;
 		background-color: var(--v-accent-base);
-		border-radius: var(--radius);
+		border-radius: $radius;
 		--height-trans: .5s height;
 		transition: .5s box-shadow,  var(--height-trans);
 
@@ -161,19 +162,18 @@ export default {
 				display: inline-block;
 				padding: 6px;
 				background-color: var(--color);
-				border-radius: var(--radius);
+				border-radius: $radius;
 			}
 			
 			.ribbon {
-				box-shadow: -2px 0 5px 1px var(--color);
 				position: absolute;
 				display: block;
 				width: 30px;
-				height: calc(100% - 2px);
+				height: 100%;
 				background-color: var(--color);
-				top: 1px;
+				top: 0px;
 				right: 0px;
-				border-radius: 0 var(--radius) 0 0;
+				border-radius: 0 $radius 0 0;
 			}
 		}
 
@@ -204,20 +204,19 @@ export default {
 			overflow: hidden;
 			transition: var(--height-trans);
 		}
-	}
-	
-	.v-card.on-hover {
-		z-index: 1;
-		box-shadow: 0 3px 10px 2px #000000a6;
-		height: 24em;
-		footer {
-			height: 4.5em;
-		}
-		main {
-			height: 15em;
-			.desc {
-				height: 100%;
-				overflow-y: scroll;
+		&.on-hover {
+			z-index: 1;
+			box-shadow: 0 3px 10px 2px #000000a6;
+			height: 24em;
+			footer {
+				height: 4.5em;
+			}
+			main {
+				height: 15em;
+				.desc {
+					height: 100%;
+					overflow-y: scroll;
+				}
 			}
 		}
 	}
