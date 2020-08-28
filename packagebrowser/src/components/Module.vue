@@ -148,6 +148,8 @@ $size-trans: $trans-dur height, $trans-dur width;
 		z-index: 0;
 		transition: $trans-dur box-shadow,  $size-trans, 0s $trans-dur z-index;
 
+		
+
 		.v-btn {
 			color: #999;
 		}
@@ -259,7 +261,6 @@ $size-trans: $trans-dur height, $trans-dur width;
 			z-index: 1;
 			box-shadow: 0 3px 5px 2px #000000a6;
 			transition: $trans-dur box-shadow, $size-trans, 0s 0s z-index;
-			background-color: var(--v-accent-lighten1);
 
 			footer {
 				height: 6em;
@@ -279,7 +280,14 @@ $size-trans: $trans-dur height, $trans-dur width;
 		&.on-hover {
 			box-shadow: 0 3px 10px 2px #000000a6;
 		}
+		&--link:before {
+			z-index: 1;
+		}
+		&--link:focus:before {
+			opacity: .08;
+		}
 	}
+	
 }
 span.languageChip {
 	margin-right: 5px;
