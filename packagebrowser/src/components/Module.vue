@@ -9,7 +9,7 @@
 			>
 			<header class="pkg-header" :class="typeClass">
 				<v-card-title>{{ module.title }}</v-card-title>
-				<v-card-subtitle>{{module.type}} - v{{ module.version }}</v-card-subtitle>
+				<v-card-subtitle>{{module.type}} - v{{ module.latest }}</v-card-subtitle>
 				<figure class="ribbon"></figure>
 			</header>
 				<v-card-text style="padding-top: 10px;">
@@ -26,17 +26,17 @@
 			<v-card-actions>
 				<v-btn
 					text
-					v-bind:href="module.foundryUrl"
+					v-bind:href="module.url"
 					target="_blank"
 				>Project</v-btn>
 
 				<v-spacer></v-spacer>
 				
-				<v-btn
+				<!-- <v-btn
 					text
 					v-bind:href="foundryPackageUrl"
 					target="_blank"
-				>Package</v-btn>
+				>Package</v-btn> -->
 
 				<v-spacer></v-spacer>
 
@@ -71,7 +71,11 @@
 
 					<v-card-text>
 
-					<b>Compatible Foundry Versions: </b><span>v{{ module.minimumCoreVersion }} - v{{ module.compatibleCoreVersion }}</span>
+					<!-- 
+						not in forge api, should probably lazyload on expansion
+
+						<b>Compatible Foundry Versions: </b><span>v{{ module.minimumCoreVersion }} - v{{ module.compatibleCoreVersion }}</span> 
+					-->
 					</v-card-text>
 				</div>
 			</v-expand-transition>
@@ -112,8 +116,8 @@ export default {
 		},
 		typeClass() {
 			return {
-				"Module": "typ-module",
-				"System": "typ-system"
+				"module": "typ-module",
+				"system": "typ-system"
 			}[this.module.type] || "typ-none";
 		},
 		languages() {
