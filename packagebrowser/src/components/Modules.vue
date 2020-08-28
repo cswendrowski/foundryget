@@ -1,10 +1,13 @@
 <template>
   <div class="hello">
     <v-container>
-      <v-navigation-drawer height="calc(100vh - 82px)" color="accent">
-        <!-- Placeholder -->
-      </v-navigation-drawer>
-
+      <v-card class="sidebar-wrapper">
+        <menu class="fixed">
+          <v-navigation-drawer height="calc(100vh - 92px)" color="accent">
+            <!-- Placeholder -->
+          </v-navigation-drawer>
+        </menu>
+      </v-card>
       <v-data-iterator
         :items="items"
         :items-per-page.sync="itemsPerPage"
@@ -81,7 +84,7 @@
               v-for="item in props.items"
               :key="item.name"
               cols="12"
-              lg="4"
+              lg="3"
               md="6"
               sm="12"
             >
@@ -234,13 +237,22 @@ export default {
 .container {
   display: flex;
   flex-direction: row;
-
-  .v-navigation-drawer {
-    height: 70vh;
+  
+  .fixed {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+  }
+  .sidebar-wrapper {
     flex: 0 0 256px;
+    background: none;
+    box-shadow: none;
     margin: {
       right: 20px;
     }
+  }
+  .v-navigation-drawer {
+    
   }
   .v-data-iterator {
     flex: 1;
