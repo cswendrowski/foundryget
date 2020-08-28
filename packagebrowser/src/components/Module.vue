@@ -125,7 +125,10 @@ export default {
 		languages() {
 			let languages = [];
 			this.module.languages.forEach(language => {
-				languages.push(getByTag(language.lang)?.local || getByTag(language.lang)?.name || language.name || language.lang);
+				let languageTag = getByTag(language.lang)?.local || getByTag(language.lang)?.name || language.name || language.lang;
+				if (!languages.includes(languageTag)) {
+					languages.push(languageTag);
+				}
 			})
 			return languages;
 		},
