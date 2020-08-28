@@ -32,11 +32,11 @@
 
 				<v-spacer></v-spacer>
 				
-				<!-- <v-btn
+				<v-btn
 					text
 					v-bind:href="foundryPackageUrl"
 					target="_blank"
-				>Package</v-btn> -->
+				>Package</v-btn>
 
 				<v-spacer></v-spacer>
 
@@ -112,7 +112,7 @@ export default {
 
 	computed: {
 		foundryPackageUrl() {
-				return "https://foundryvtt.com" + this.module.foundryUrl;
+				return `https://foundryvtt.com/packages/${this.module.name}/`;
 		},
 		typeClass() {
 			return {
