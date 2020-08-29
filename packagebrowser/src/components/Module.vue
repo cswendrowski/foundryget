@@ -1,48 +1,50 @@
 <template>
 
 <div class="rel">
-	<v-hover v-slot:default="{ hover }">
-		<v-card class="mx-auto" :class="{ 'on-hover': hover, 'active': module.cardActive }" @click.stop="toggle($event, module)">
-			<header class="pkg-header" :class="typeClass">
-				<v-card-title>{{ module.title }}</v-card-title>
-				<v-card-subtitle>
-					<span class="pkg-type">{{module.type}}</span>
-					-
-					<span class="pkg-ver">v{{ module.latest }}</span>
-				</v-card-subtitle>
-			</header>
-			<main>
-				<v-card-text style="padding-top: 10px;">
-					<h4>Author(s): {{ module.author }}</h4>
-					<p class="desc" v-html="module.description"></p>
-				</v-card-text>
-			</main>
-			<footer>
-				<v-card-text class="languages">
-					<v-chip class="languageChip" v-for="language in languages" :key="language">
-						<v-icon size="1.5em" left>mdi-translate</v-icon>
-						{{ language }}
-					</v-chip>
-				</v-card-text>
-				<v-btn text v-bind:href="module.url" target="_blank">
-					Project
-				</v-btn>
-				<v-btn text v-bind:href="foundryPackageUrl" target="_blank">
-					Package
-				</v-btn>
-				<v-btn text v-bind:href="module.manifest" target="_blank">
-					Manifest
-				</v-btn>
-				<v-card-text>
-				<!-- 
-					// not in forge api, should probably lazyload on expansion
-					<strong>Compatible Foundry Versions:</strong>
-					<span>v{{ module.minimumCoreVersion }} - v{{ module.compatibleCoreVersion }}</span>
-				-->
-				</v-card-text>
-			</footer>
-		</v-card>
-	</v-hover>
+	<lazy-component>
+		<v-hover v-slot:default="{ hover }">
+			<v-card class="mx-auto" :class="{ 'on-hover': hover, 'active': module.cardActive }" @click.stop="toggle($event, module)">
+				<header class="pkg-header" :class="typeClass">
+					<v-card-title>{{ module.title }}</v-card-title>
+					<v-card-subtitle>
+						<span class="pkg-type">{{module.type}}</span>
+						-
+						<span class="pkg-ver">v{{ module.latest }}</span>
+					</v-card-subtitle>
+				</header>
+				<main>
+					<v-card-text style="padding-top: 10px;">
+						<h4>Author(s): {{ module.author }}</h4>
+						<p class="desc" v-html="module.description"></p>
+					</v-card-text>
+				</main>
+				<footer>
+					<v-card-text class="languages">
+						<v-chip class="languageChip" v-for="language in languages" :key="language">
+							<v-icon size="1.5em" left>mdi-translate</v-icon>
+							{{ language }}
+						</v-chip>
+					</v-card-text>
+					<v-btn text v-bind:href="module.url" target="_blank">
+						Project
+					</v-btn>
+					<v-btn text v-bind:href="foundryPackageUrl" target="_blank">
+						Package
+					</v-btn>
+					<v-btn text v-bind:href="module.manifest" target="_blank">
+						Manifest
+					</v-btn>
+					<v-card-text>
+					<!-- 
+						// not in forge api, should probably lazyload on expansion
+						<strong>Compatible Foundry Versions:</strong>
+						<span>v{{ module.minimumCoreVersion }} - v{{ module.compatibleCoreVersion }}</span>
+					-->
+					</v-card-text>
+				</footer>
+			</v-card>
+		</v-hover>
+	</lazy-component>
 </div>
 
 </template>
