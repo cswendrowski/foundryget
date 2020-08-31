@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <v-container @click="closeAll">
+    <v-container>
       <v-card class="sidebar-wrapper">
         <menu class="fixed">
           <v-navigation-drawer height="calc(100vh - 92px)" color="accent">
@@ -200,9 +200,7 @@ export default {
     };
   },
   methods: {
-    closeAll: function() {
-      this.items.forEach(i => i.cardActive = false);
-    }
+
   },
   mounted() {
     console.log("Mounted");

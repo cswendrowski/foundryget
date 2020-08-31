@@ -2,7 +2,7 @@
 
 <div class="rel">
 	<lazy-component>
-		<v-card class="mx-auto" :ripple="false" :class="{ 'on-hover': hover, 'active': module.cardActive }" @click="this.focus()">
+		<v-card class="mx-auto" :ripple="false" :class="{ 'on-hover': hover, 'active': module.cardActive }" @click="true">
 			<header class="pkg-header" :class="typeClass">
 				<v-card-title>{{ module.title }}</v-card-title>
 				<v-card-subtitle>
