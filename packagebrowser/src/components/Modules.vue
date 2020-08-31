@@ -188,7 +188,8 @@ export default {
       itemsPerPageArray: [6, 9, 12],
       keys: [
         'Name',
-        'Type'
+        'Type',
+        'Installs'
       ],
       items: [],
     };
