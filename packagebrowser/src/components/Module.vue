@@ -113,6 +113,32 @@ $radius: 10px;
 $trans-dur: .5s;
 $size-trans: $trans-dur height, $trans-dur width;
 
+@keyframes open {
+	0% {
+		z-index: 0;
+	}
+	1% {
+		z-index: 2;
+	}
+	99% {
+		z-index: 2;
+	}
+	100% {
+		z-index: 1;
+	}
+}
+@keyframes close {
+	0% {
+		z-index: 1;
+	}
+	99% {
+		z-index: 1;
+	}
+	100% {
+		z-index: 0;
+	}
+}
+
 @mixin fancy-scroll {
 	&::-webkit-scrollbar { 
 		width: 4px;
@@ -141,10 +167,8 @@ $size-trans: $trans-dur height, $trans-dur width;
 		transition: .2s box-shadow;
 		background-color: var(--v-accent-base);
 		border-radius: $radius;
-		z-index: 0;
-		transition: $trans-dur box-shadow,  $size-trans, 0s $trans-dur z-index;
-
-		
+		animation: $trans-dur close;
+		transition: $trans-dur box-shadow,  $size-trans;
 
 		.v-btn {
 			color: #999;
@@ -255,9 +279,10 @@ $size-trans: $trans-dur height, $trans-dur width;
 		&:focus-within {
 			width: 55ch;
 			height: 26.5em;
+			animation: $trans-dur open;
 			z-index: 1;
 			box-shadow: 0 3px 5px 2px #000000a6;
-			transition: $trans-dur box-shadow, $size-trans, 0s 0s z-index;
+			transition: $trans-dur box-shadow, $size-trans;
 
 			footer {
 				height: 6em;
