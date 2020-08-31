@@ -207,7 +207,7 @@ export default {
 
     axios
       .get(
-        "https://dev.forge-vtt.com/api/bazaar"
+        "https://forge-vtt.com/api/bazaar"  // For future reference, the Dev API is at: "https://dev.forge-vtt.com/api/bazaar"
       )
       .then(response => {
         console.log(response.data.packages);
