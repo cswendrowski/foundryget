@@ -93,7 +93,8 @@ export default {
 		typeClass() {
 			return {
 				"module": "typ-module",
-				"system": "typ-system"
+				"system": "typ-system",
+				"world": "typ-world"
 			}[this.module.type] || "typ-none";
 		},
 		languages() {
