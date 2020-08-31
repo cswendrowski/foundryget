@@ -216,8 +216,6 @@ export default {
         let modules = [];
         let systems = [];
         response.data.packages.forEach(Package => {
-          Package.cardActive = false;
-
           if (Package.type === "system") {
             systems.push(Package);
           } else if (Package.type === "module") {
