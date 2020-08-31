@@ -2,7 +2,7 @@
 
 <div class="rel">
 	<lazy-component>
-		<v-card class="mx-auto" :ripple="false" :class="{ 'on-hover': hover, 'active': module.cardActive }" @click="true">
+		<v-card class="mx-auto" :ripple="false" @click="()=>{}">
 			<header class="pkg-header" :class="typeClass">
 				<v-card-title>{{ module.title }}</v-card-title>
 				<v-card-subtitle>
@@ -13,7 +13,10 @@
 			</header>
 			<main>
 				<v-card-text style="padding-top: 10px;">
-					<h4>Author(s): {{ module.author }}</h4>
+					<h4 class="author">
+						<label>Author(s): </label>
+						<span>{{ module.author }}</span>
+					</h4>
 					<p class="desc" v-html="module.description"></p>
 				</v-card-text>
 			</main>
@@ -141,13 +144,16 @@ $size-trans: $trans-dur height, $trans-dur width;
 
 @mixin fancy-scroll {
 	&::-webkit-scrollbar { 
-		width: 4px;
-		height: 4px;
+		width: 6px;
+		height: 6px;
+		border-radius: 3px;
 
 		&-track, &-track-piece {
+			border-radius: 3px;
 			background-color: var(--v-secondary-base);
 		}
 		&-thumb {
+			border-radius: 3px;
 			background-color: var(--v-primary-base);
 		}
 	}
@@ -246,8 +252,18 @@ $size-trans: $trans-dur height, $trans-dur width;
 				position: relative;
 
 				@include fancy-scroll;
-
+			}
+			.author {
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				color: var(--v-accent-lighten2);
+				border-bottom: 1px dashed var(--v-accent-lighten1);
+				margin-bottom: .5em;
 				
+				label {
+					color: var(--v-accent-lighten3);
+				}
 			}
 			&::after {
 				content: " ";
@@ -263,7 +279,10 @@ $size-trans: $trans-dur height, $trans-dur width;
 			height: 0em;
 			overflow: hidden;
 			transition: $size-trans;
-
+			background-color: var(--v-secondary-lighten1);
+			.v-chip {
+				font-size: 1em;
+			}
 			.languages {
 				height: 4em;
 				width: 96%;
@@ -278,7 +297,7 @@ $size-trans: $trans-dur height, $trans-dur width;
 		&:focus,
 		&:focus-within {
 			width: 55ch;
-			height: 26.5em;
+			height: 26em;
 			animation: $trans-dur open;
 			z-index: 1;
 			box-shadow: 0 3px 5px 2px #000000a6;
@@ -289,10 +308,14 @@ $size-trans: $trans-dur height, $trans-dur width;
 			}
 			main {
 				height: 15em;
+				margin-bottom: .5em;
 				.desc {
 					height: 100%;
 					overflow-y: scroll;
-					
+				}
+				.author {
+					overflow: initial;
+					white-space: normal;
 				}
 				&::after {
 					background: none;
