@@ -9,6 +9,11 @@
 					<span class="pkg-type">{{module.type}}</span>
 					-
 					<span class="pkg-ver">v{{ module.latest }}</span>
+					<span class="popularity">
+						<progress-ring :radius="25" :progress="installs" :stroke="3"/>
+						<label>Users</label>
+						<span>{{ popularity }}%</span>
+					</span>
 				</v-card-subtitle>
 			</header>
 			<main>
@@ -52,9 +57,13 @@
 
 <script>
 import { getByTag } from 'locale-codes';
+import ProgressRing from "./ProgressRing.vue";
 
 export default {
 	name: "Module",
+	components: {
+		ProgressRing
+	},
 	props: {
 		modules: Array,
 		module: Object
@@ -102,6 +111,14 @@ export default {
 				return true;
 			}
 			return false;
+		},
+		installs() {
+			return Number(this.module.installs);
+		},
+		popularity() {
+			const inst = Number(this.module.installs);
+			let pop = inst > 1 ? Math.round(inst) : "<1";
+			return pop;
 		}
 	},
 	methods: {
@@ -205,7 +222,7 @@ $size-trans: $trans-dur height, $trans-dur width;
 					overflow: hidden;
 					text-overflow: ellipsis;
 					white-space: nowrap;
-					width: calc(100% - 30px);
+					width: calc(100% - 70px);
 					display: inline-block;
 				}
 				&__subtitle {
@@ -222,6 +239,41 @@ $size-trans: $trans-dur height, $trans-dur width;
 				padding: 6px;
 				background-color: var(--color);
 				border-radius: $radius;
+			}
+
+			.popularity {
+				position: absolute;
+				right: 40px;
+				top: calc(50% - 1em);
+				display: inline-block;
+				width: 44px;
+				text-align: center;
+				height: 44px;
+				background-color: var(--v-secondary-base);
+				border-radius: 50%;
+				svg {
+					position: absolute;
+					top: -3.5px;
+					left: -3.5px;
+					z-index: 1;
+				}
+				label {
+					font-size: .8em;
+					color: var(--v-accent-lighten3);
+					line-height: 1em;
+					position: absolute;
+					top: -1.2em;
+					left: 0;
+					width: 100%;
+				}
+				span {
+					font-size: .9em;
+					line-height: 1em;
+					position: absolute;
+					top: 1.2em;
+					width: 100%;
+					left: 0;
+				}
 			}
 			
 			&::after {
