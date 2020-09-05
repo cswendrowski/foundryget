@@ -1,6 +1,6 @@
 <script>
 // Helpers
-import { wrapInArray, sortItems, deepEqual, groupItems, searchItems, fillArray } from 'vuetify/lib/util/helpers';
+import { wrapInArray, sortItems, deepEqual, groupItems, fillArray, getObjectValueByPath } from 'vuetify/lib/util/helpers';
 import Vue from 'vue';
 export default Vue.extend({
   name: 'v-filterable-data',
@@ -424,4 +424,23 @@ export default Vue.extend({
   }
 
 });
+
+function searchItems(items, filter) {
+  if (!filter) return;
+
+  // filters
+  let search = filter.search.toString().toLowerCase();
+
+  // filter checker
+  if (search.trim() === '') return items;
+
+  return items.filter((item) => Object.keys(item).some(key => {
+    let value = getObjectValueByPath(item, key);
+
+    return value != null
+      && search != null
+      && typeof value !== 'boolean'
+      && value.toString().toLocaleLowerCase().indexOf(search.toLocaleLowerCase()) !== -1;
+  }));
+}
 </script>
