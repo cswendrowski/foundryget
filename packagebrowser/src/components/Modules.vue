@@ -8,11 +8,12 @@
           </v-navigation-drawer>
         </menu>
       </v-card>
-      <v-data-iterator
+      <v-filterable-data-iterator
         :items="items"
         :items-per-page.sync="itemsPerPage"
         :page="page"
-        :search="search"
+        :custom-filter="customFilter"
+        :search="filter"
         :sort-by="sortBy.toLowerCase()"
         :sort-desc="sortDesc"
       >
@@ -25,7 +26,7 @@
             class="mb-1"
           >
             <v-text-field
-              v-model="search"
+              v-model="filter.search"
               clearable
               flat
               solo-inverted
@@ -153,7 +154,7 @@
           </v-row>
         </template>
        -->
-      </v-data-iterator>
+      </v-filterable-data-iterator>
 
 <!-- 
         <Module
@@ -168,19 +169,23 @@
 <script>
 import axios from "axios";
 import Module from "./Module.vue";
+import VFilterableDataIterator from "./DataIteratorOverride/FilterableDataIterator.vue";
+import { getObjectValueByPath } from "vuetify/lib/util/helpers";
 
 export default {
   name: "Modules",
 
   components: {
-    Module
+    Module,
+    VFilterableDataIterator
   },
 
   data() {
     return {
       modules: null,
-      search: '',
-      filter: {},
+      filter: {
+        search: ''
+      },
       sortDesc: false,
       sortBy: 'name',
       page: 1,
@@ -194,9 +199,30 @@ export default {
       items: [],
     };
   },
-  methods: {
 
+  methods: {
+    customFilter(items, filter) {
+      console.log(filter.search)
+
+      // filters
+      let search = filter.search.toString().toLowerCase();
+
+      // filter checker
+      if (
+        search.trim() === ''
+      ) return items;
+
+      return items.filter((item) => Object.keys(item).some(key => {
+        let value = getObjectValueByPath(item, key);
+
+        return value != null
+          && search != null
+          && typeof value !== 'boolean'
+          && value.toString().toLocaleLowerCase().indexOf(search.toLocaleLowerCase()) !== -1;
+      }));
+    },
   },
+
   mounted() {
     console.log("Mounted");
 
