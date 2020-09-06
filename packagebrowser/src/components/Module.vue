@@ -256,7 +256,6 @@ $size-trans: $trans-dur height, $trans-dur width;
 					position: absolute;
 					top: -3.5px;
 					left: -3.5px;
-					z-index: 1;
 				}
 				label {
 					font-size: .8em;
