@@ -4,7 +4,24 @@
       <v-card class="sidebar-wrapper">
         <menu class="fixed">
           <v-navigation-drawer height="calc(100vh - 92px)" color="accent">
-            <!-- Placeholder -->
+
+            <v-card-text>
+              <h2 class="title mb-2">Languages</h2>
+
+              <v-chip-group
+                v-model="filter.languages"
+                column
+                multiple
+              >
+                <v-chip
+                  v-for="language in languages"
+                  :key="language"
+                  filter
+                  outlined
+                >{{language}}</v-chip>
+              </v-chip-group>
+            </v-card-text>
+
           </v-navigation-drawer>
         </menu>
       </v-card>
@@ -169,6 +186,7 @@
 <script>
 import axios from "axios";
 import Module from "./Module.vue";
+import { getByTag } from 'locale-codes';
 import VFilterableDataIterator from "./DataIteratorOverride/FilterableDataIterator.vue";
 import { getObjectValueByPath } from "vuetify/lib/util/helpers";
 
@@ -183,8 +201,10 @@ export default {
   data() {
     return {
       modules: null,
+      languages: [],
       filter: {
-        search: ''
+        search: '',
+        languages: []
       },
       sortDesc: false,
       sortBy: 'name',
@@ -201,26 +221,63 @@ export default {
   },
 
   methods: {
+  
     customFilter(items, filter) {
       console.log(filter.search)
 
       // filters
-      let search = filter.search.toString().toLowerCase();
+      let textSearch = filter.search.toString().toLowerCase();
+      let languagesSearch = []
+      filter.languages.forEach(languageIndex => languagesSearch.push(this.languages[languageIndex]))
 
-      // filter checker
+      // check if any filter active
       if (
-        search.trim() === ''
+           ( typeof filter.search !== 'string' || filter.search.trim().length === 0 ) // check if search is empty
+        && ( typeof filter.languages !== 'object' || filter.languages.length === 0 ) // check if languages is empty
       ) return items;
 
+      /**@type {Object} item -- object with module data
+       * @type {String} key -- current key that's being looked at
+       * @type {String} value -- current value that got returned from combination object - key */
       return items.filter((item) => Object.keys(item).some(key => {
         let value = getObjectValueByPath(item, key);
 
         return value != null
-          && search != null
           && typeof value !== 'boolean'
-          && value.toString().toLocaleLowerCase().indexOf(search.toLocaleLowerCase()) !== -1;
+          && 
+          (
+             this.filterSearch(value, textSearch)
+          || this.filterLanguage(value, languagesSearch, key)
+          )
       }));
     },
+
+    filterSearch(value, textSearch) {
+      if ( !textSearch || textSearch.trim() === '' ) return false;
+      return value.toString().toLocaleLowerCase().indexOf(textSearch.toLocaleLowerCase()) !== -1;
+    },
+
+    filterLanguage(value, languagesSearch, key) {
+      if ( !languagesSearch && ( languagesSearch.length === 0 || value.length === 0 || key !== "languages" )) return false;
+      if (languagesSearch.includes(getByTag(value[0].lang)?.local || getByTag(value[0].lang)?.name || value[0].name || value[0].lang)) return true;
+      return false;
+    },
+
+    getLanguages () {
+      let languages = [];
+      this.modules.forEach(module => {
+        if (module.languages && module.languages.length !== 0) {
+          module.languages.forEach(language => {
+            let languageTag = getByTag(language.lang)?.local || getByTag(language.lang)?.name || language.name || language.lang;
+            if (!languages.includes(languageTag)) {
+              languages.push(languageTag);
+            }
+          });
+        }
+      });
+      return languages;
+    },
+  
   },
 
   mounted() {
@@ -244,7 +301,9 @@ export default {
         this.modules = modules;
         this.systems = systems;
         this.items = this.items.concat(response.data.packages);
-      })
+        this.languages = this.getLanguages();
+        
+    })
     
   },
 
