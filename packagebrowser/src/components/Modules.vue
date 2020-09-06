@@ -259,7 +259,7 @@ export default {
 
     filterLanguage(value, languagesSearch, key) {
       if ( !languagesSearch && ( languagesSearch.length === 0 || value.length === 0 || key !== "languages" )) return false;
-      if (languagesSearch.includes(getByTag(value[0].lang)?.local || getByTag(value[0].lang)?.name || value[0].name || value[0].lang)) return true;
+      if (languagesSearch.includes(getByTag(value[0]?.lang)?.local || getByTag(value[0]?.lang)?.name || value[0]?.name || value[0]?.lang)) return true;
       return false;
     },
 
