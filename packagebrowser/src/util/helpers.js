@@ -4,7 +4,8 @@ import { where } from "langs";
 export const func = {
   getLanguageByTag: (language) => {
     // exceptions
-    if (["cn", "zh-SHAN", "zh-HANS"].indexOf(language?.lang) !== -1) return "中文";
+    if (["cn", "zh-SHAN", "zh-HANS"].indexOf(language?.lang) !== -1)
+      return "中文";
     if (language?.lang === "kr") return "한국어";
 
     // auto detect
@@ -31,4 +32,5 @@ export const func = {
     lang = language?.lang;
     return lang;
   },
+
 };
