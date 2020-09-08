@@ -186,7 +186,6 @@
 <script>
 import axios from "axios";
 import Module from "./Module.vue";
-import { getByTag } from 'locale-codes';
 import VFilterableDataIterator from "./DataIteratorOverride/FilterableDataIterator.vue";
 import { getObjectValueByPath } from "vuetify/lib/util/helpers";
 
@@ -258,9 +257,15 @@ export default {
     },
 
     filterLanguage(value, languagesSearch, key) {
-      if ( !languagesSearch && ( languagesSearch.length === 0 || value.length === 0 || key !== "languages" )) return false;
-      if (languagesSearch.includes(getByTag(value[0]?.lang)?.local || getByTag(value[0]?.lang)?.name || value[0]?.name || value[0]?.lang)) return true;
-      return false;
+      if ( !languagesSearch || languagesSearch?.length === 0 || value?.length === 0 || key !== "languages" ) return false;
+
+      let isTrue = false;
+      value.forEach(language => {
+        let localLanguage = this.$func.getLanguageByTag(language);
+
+        if (languagesSearch.includes(localLanguage)) isTrue = true;
+      })
+      return isTrue;
     },
 
     getLanguages () {
@@ -268,7 +273,7 @@ export default {
       this.modules.forEach(module => {
         if (module.languages && module.languages.length !== 0) {
           module.languages.forEach(language => {
-            let languageTag = getByTag(language.lang)?.local || getByTag(language.lang)?.name || language.name || language.lang;
+            let languageTag = this.$func.getLanguageByTag(language);
             if (!languages.includes(languageTag)) {
               languages.push(languageTag);
             }

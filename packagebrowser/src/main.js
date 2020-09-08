@@ -1,10 +1,14 @@
 import Vue from "vue";
+import { func } from "./util/languageUtil"
 import App from "./App.vue";
 import vuetify from "./plugins/vuetify";
 import './plugins/v-lazy-component';
 // import axios from "axios";
 
+
+
 Vue.config.productionTip = false;
+Vue.prototype.$func = func;
 
 new Vue({
   render: function(h) {

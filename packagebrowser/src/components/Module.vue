@@ -56,7 +56,6 @@
 </template>
 
 <script>
-import { getByTag } from 'locale-codes';
 import ProgressRing from "./ProgressRing.vue";
 
 export default {
@@ -100,7 +99,7 @@ export default {
 		languages() {
 			let languages = [];
 			this.module.languages.forEach(language => {
-				let languageTag = getByTag(language.lang)?.local || getByTag(language.lang)?.name || language.name || language.lang;
+				let languageTag = this.$func.getLanguageByTag(language);
 				if (!languages.includes(languageTag)) {
 					languages.push(languageTag);
 				}
