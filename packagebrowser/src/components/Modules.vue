@@ -225,7 +225,13 @@ export default {
       console.log(filter.search)
 
       // filters
-      let textSearch = filter.search.toString().toLowerCase();
+      let textSearch = "";
+      try {
+        textSearch = filter.search.toString().toLowerCase();
+      }
+      catch {
+        textSearch = "";
+      }
       let languagesSearch = []
       filter.languages.forEach(languageIndex => languagesSearch.push(this.languages[languageIndex]))
 
@@ -238,26 +244,34 @@ export default {
       /**@type {Object} item -- object with module data
        * @type {String} key -- current key that's being looked at
        * @type {String} value -- current value that got returned from combination object - key */
-      return items.filter((item) => Object.keys(item).some(key => {
-        let value = getObjectValueByPath(item, key);
+      return items.filter((item) => {
+        // object with all filters, used for multi-filter
+        let check = {
+          filterSearch: false,
+          filterLanguage: false
+        };
 
-        return value != null
-          && typeof value !== 'boolean'
-          && 
-          (
-             this.filterSearch(value, textSearch)
-          || this.filterLanguage(value, languagesSearch, key)
-          )
-      }));
+        Object.keys(item).forEach(key => {
+          let value = getObjectValueByPath(item, key);
+
+          if ( value != null && typeof value !== 'boolean' ) {
+            if ( [true, undefined].includes(this.filterSearch(value, textSearch))) check.filterSearch = true
+            if ( [true, undefined].includes(this.filterLanguage(value, languagesSearch, key))) check.filterLanguage = true
+          }
+        })
+
+        return Object.keys(check).every( k => check[k] )
+      });
     },
 
     filterSearch(value, textSearch) {
-      if ( !textSearch || textSearch.trim() === '' ) return false;
+      if ( !textSearch || textSearch.trim() === '' || typeof value === "undefined" ) return undefined;
       return value.toString().toLocaleLowerCase().indexOf(textSearch.toLocaleLowerCase()) !== -1;
     },
 
     filterLanguage(value, languagesSearch, key) {
-      if ( !languagesSearch || languagesSearch?.length === 0 || value?.length === 0 || key !== "languages" ) return false;
+      if ( !languagesSearch || languagesSearch?.length === 0 ) return undefined;
+      if ( value?.length === 0 || key !== "languages" ) return false;
 
       let isTrue = false;
       value.forEach(language => {
