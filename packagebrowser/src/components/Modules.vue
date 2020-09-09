@@ -255,12 +255,12 @@ export default {
           let value = getObjectValueByPath(item, key);
 
           if ( value != null && typeof value !== 'boolean' ) {
-            if ( this.filterSearch(value, textSearch) ) check.filterSearch = true
-            if ( this.filterLanguage(value, languagesSearch, key) ) check.filterLanguage = true
+            if ( !check.filterSearch && this.filterSearch(value, textSearch) ) check.filterSearch = true;
+            if ( !check.filterLanguage && this.filterLanguage(value, languagesSearch, key) ) check.filterLanguage = true;
           }
         })
 
-        return Object.keys(check).every( k => check[k] )
+        return Object.keys(check).every( k => check[k] );
       });
     },
 
