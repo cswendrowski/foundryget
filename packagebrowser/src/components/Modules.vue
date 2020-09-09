@@ -36,7 +36,7 @@
       >
 
       <template v-slot:header>
-        
+
           <v-toolbar
             dark
             color="primary"
@@ -113,7 +113,7 @@
             </v-col>
           </v-row>
         </template>
-<!--      
+<!--
         <template v-slot:footer>
           <v-row class="mt-2" align="center" justify="center">
             <span class="grey--text">Items per page</span>
@@ -141,9 +141,9 @@
                 </v-list-item>
               </v-list>
             </v-menu>
-  
+
             <v-spacer></v-spacer>
-  
+
             <span
               class="mr-4
               grey--text"
@@ -173,7 +173,7 @@
        -->
       </v-filterable-data-iterator>
 
-<!-- 
+<!--
         <Module
             v-for="module in modules"
             v-bind:module="module"
@@ -220,7 +220,7 @@ export default {
   },
 
   methods: {
-  
+
     customFilter(items, filter) {
       console.log(filter.search)
 
@@ -255,8 +255,8 @@ export default {
           let value = getObjectValueByPath(item, key);
 
           if ( value != null && typeof value !== 'boolean' ) {
-            if ( [true, undefined].includes(this.filterSearch(value, textSearch))) check.filterSearch = true
-            if ( [true, undefined].includes(this.filterLanguage(value, languagesSearch, key))) check.filterLanguage = true
+            if ( this.filterSearch(value, textSearch) ) check.filterSearch = true
+            if ( this.filterLanguage(value, languagesSearch, key) ) check.filterLanguage = true
           }
         })
 
@@ -265,12 +265,12 @@ export default {
     },
 
     filterSearch(value, textSearch) {
-      if ( !textSearch || textSearch.trim() === '' || typeof value === "undefined" ) return undefined;
+      if ( !textSearch || textSearch.trim() === '' ) return true;
       return value.toString().toLocaleLowerCase().indexOf(textSearch.toLocaleLowerCase()) !== -1;
     },
 
     filterLanguage(value, languagesSearch, key) {
-      if ( !languagesSearch || languagesSearch?.length === 0 ) return undefined;
+      if ( !languagesSearch || languagesSearch?.length === 0 ) return true;
       if ( value?.length === 0 || key !== "languages" ) return false;
 
       let isTrue = false;
@@ -296,7 +296,7 @@ export default {
       });
       return languages;
     },
-  
+
   },
 
   mounted() {
@@ -321,9 +321,9 @@ export default {
         this.systems = systems;
         this.items = this.items.concat(response.data.packages);
         this.languages = this.getLanguages();
-        
+
     })
-    
+
   },
 
   computed: {
@@ -339,7 +339,7 @@ export default {
 .container {
   display: flex;
   flex-direction: row;
-  
+
   .fixed {
     width: 100%;
     height: 100%;
@@ -354,7 +354,7 @@ export default {
     }
   }
   .v-navigation-drawer {
-    
+
   }
   .v-data-iterator {
     flex: 1;
