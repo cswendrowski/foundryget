@@ -22,6 +22,23 @@
               </v-chip-group>
             </v-card-text>
 
+            <v-card-text>
+              <h2 class="title mb-2">Systems</h2>
+
+              <v-chip-group
+                v-model="filter.systems"
+                column
+                multiple
+              >
+                <v-chip
+                  v-for="system in systemFilter"
+                  :key="system"
+                  filter
+                  outlined
+                >{{system}}</v-chip>
+              </v-chip-group>
+            </v-card-text>
+
           </v-navigation-drawer>
         </menu>
       </v-card>
@@ -201,9 +218,14 @@ export default {
     return {
       modules: null,
       languages: [],
+      systemFilter: [],
+      systemCache: {
+        any: "System Agnostic"
+      },
       filter: {
         search: '',
-        languages: []
+        languages: [],
+        systems: [],
       },
       sortDesc: false,
       sortBy: 'name',
@@ -222,8 +244,6 @@ export default {
   methods: {
 
     customFilter(items, filter) {
-      console.log(filter.search)
-
       // filters
       let textSearch = "";
       try {
@@ -233,12 +253,16 @@ export default {
         textSearch = "";
       }
       let languagesSearch = []
-      filter.languages.forEach(languageIndex => languagesSearch.push(this.languages[languageIndex]))
+      filter.languages.forEach(languageIndex => languagesSearch.push(this.languages[languageIndex]));
+      let systemSearch = [];
+      filter.systems.forEach(systemIndex => systemSearch.push(this.getSystem(this.systemFilter[systemIndex])));
+
 
       // check if any filter active
       if (
            ( typeof filter.search !== 'string' || filter.search.trim().length === 0 ) // check if search is empty
         && ( typeof filter.languages !== 'object' || filter.languages.length === 0 ) // check if languages is empty
+        && ( typeof filter.systems !== 'object' || filter.systems.length === 0 ) // check if systems is empty
       ) return items;
 
       /**@type {Object} item -- object with module data
@@ -248,15 +272,19 @@ export default {
         // object with all filters, used for multi-filter
         let check = {
           filterSearch: false,
-          filterLanguage: false
+          filterLanguage: false,
+          filterSystem: false
         };
 
         Object.keys(item).forEach(key => {
           let value = getObjectValueByPath(item, key);
 
-          if ( value != null && typeof value !== 'boolean' ) {
+          if ( value != null ) {
             if ( !check.filterSearch && this.filterSearch(value, textSearch) ) check.filterSearch = true;
             if ( !check.filterLanguage && this.filterLanguage(value, languagesSearch, key) ) check.filterLanguage = true;
+          }
+          if (value !== undefined) {
+            if ( !check.filterSystem && this.filterSystem(value, systemSearch, key) ) check.filterSystem = true;
           }
         })
 
@@ -282,7 +310,19 @@ export default {
       return isTrue;
     },
 
-    getLanguages () {
+    filterSystem(value, systemSearch, key) {
+      if ( !systemSearch || systemSearch?.length === 0 ) return true;
+      if ( key !== "systems" ) return false;
+      if (value === null) return systemSearch.includes("any");
+
+      let isTrue = false;
+      value.forEach(system => {
+        if (systemSearch.includes(system)) isTrue = true;
+      })
+      return isTrue;
+    },
+
+    getLanguages() {
       let languages = [];
       this.modules.forEach(module => {
         if (module.languages && module.languages.length !== 0) {
@@ -295,6 +335,32 @@ export default {
         }
       });
       return languages;
+    },
+
+    getSystems() {
+      let systems = ["System Agnostic"];
+      this.modules.forEach(module => {
+        if (module.systems && module.systems.length !== 0) {
+          module.systems.forEach(system => {
+            if (!Object.keys(this.systemCache).includes(system)) {
+              let systemObject = this.systems.filter(globalSystem => globalSystem.name === system);
+              if (!systems.includes(systemObject[0]?.title || system)) {
+                systems.push(systemObject[0]?.title || system);
+                this.systemCache[system] = systemObject[0]?.title || system;
+              }
+            }
+          });
+        }
+      });
+      return systems;
+    },
+
+    getSystem(systemId) {
+      let out = "";
+      Object.entries(this.systemCache).forEach(([key, val]) => {
+        if (val === systemId) out = key;
+      });
+      return out;
     },
 
   },
@@ -321,6 +387,7 @@ export default {
         this.systems = systems;
         this.items = this.items.concat(response.data.packages);
         this.languages = this.getLanguages();
+        this.systemFilter = this.getSystems();
 
     })
 
