@@ -404,13 +404,9 @@ export default {
                 && author.match(/(object Object|translation|discord)/gi) == null
                 && author.match(/[a-zA-Z]/) != null
             ) {
-              try {
-                author = author.match(/(?<= by )(.*)/i)?.[0] || author;
-                author = author.match(/(?<= from )(.*)/i)?.[0] || author;
-              } catch {
-                console.error("Your browser does not support regex lookbehind");
-              }
-                author = author.match(/(.*)(?=#)/)?.[0] || author;
+              author = author.split(" by ")?.[1] || author;
+              author = author.split(" from ")?.[1] || author;
+              author = author.split("#")?.[0] || author;
               author = author.trim();
               if (!(
                     this.$func.ciIncludes(authors, author.replace("@", ""))
