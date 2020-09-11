@@ -6,6 +6,19 @@
           <v-navigation-drawer height="calc(100vh - 92px)" color="accent">
 
             <v-card-text>
+              <v-autocomplete
+                v-model="filter.authors"
+                :items="authors"
+                outlined
+                dense
+                chips
+                small-chips
+                label="Authors"
+                multiple
+              ></v-autocomplete>
+            </v-card-text>
+
+            <v-card-text>
               <h2 class="title mb-2">Languages</h2>
 
               <v-chip-group
@@ -218,6 +231,7 @@ export default {
     return {
       modules: null,
       languages: [],
+      authors: [],
       systemFilter: [],
       systemCache: {
         any: "System Agnostic"
@@ -226,6 +240,7 @@ export default {
         search: '',
         languages: [],
         systems: [],
+        authors: [],
       },
       sortDesc: false,
       sortBy: 'name',
@@ -256,6 +271,7 @@ export default {
       filter.languages.forEach(languageIndex => languagesSearch.push(this.languages[languageIndex]));
       let systemSearch = [];
       filter.systems.forEach(systemIndex => systemSearch.push(this.getSystem(this.systemFilter[systemIndex])));
+      let authorSearch = filter.authors;
 
 
       // check if any filter active
@@ -263,6 +279,7 @@ export default {
            ( typeof filter.search !== 'string' || filter.search.trim().length === 0 ) // check if search is empty
         && ( typeof filter.languages !== 'object' || filter.languages.length === 0 ) // check if languages is empty
         && ( typeof filter.systems !== 'object' || filter.systems.length === 0 ) // check if systems is empty
+        && ( typeof filter.authors !== 'object' || filter.authors.length === 0 ) // check if authors is empty
       ) return items;
 
       /**@type {Object} item -- object with module data
@@ -273,7 +290,8 @@ export default {
         let check = {
           filterSearch: false,
           filterLanguage: false,
-          filterSystem: false
+          filterSystem: false,
+          filterAuthor: false
         };
 
         Object.keys(item).forEach(key => {
@@ -282,6 +300,7 @@ export default {
           if ( value != null ) {
             if ( !check.filterSearch && this.filterSearch(value, textSearch) ) check.filterSearch = true;
             if ( !check.filterLanguage && this.filterLanguage(value, languagesSearch, key) ) check.filterLanguage = true;
+            if ( !check.filterAuthor && this.filterAuthor(value, authorSearch, key) ) check.filterAuthor = true;
           }
           if (value !== undefined) {
             if ( !check.filterSystem && this.filterSystem(value, systemSearch, key) ) check.filterSystem = true;
@@ -319,6 +338,17 @@ export default {
       value.forEach(system => {
         if (systemSearch.includes(system)) isTrue = true;
       })
+      return isTrue;
+    },
+
+    filterAuthor(value, authorSearch, key) {
+      if ( !authorSearch || authorSearch?.length === 0 ) return true;
+      if ( value?.length === 0 || key !== "author" ) return false;
+
+      let isTrue = false;
+      authorSearch.forEach(author => {
+        if (this.$func.ciIncludes(value, author)) isTrue = true;
+      });
       return isTrue;
     },
 
@@ -363,6 +393,34 @@ export default {
       return out;
     },
 
+    getAuthors() {
+      let authors = [];
+      this.modules.forEach(module => {
+        if (module.author && module.author?.length !== 0) {
+          const regex = /(,|\[|\]|\(|\)|<|>|-|–|\/|[^ps]:| and | maintained by )/gi;
+          module.author.split(regex).forEach(author => {
+            if (typeof author !== "object"
+                && author.match(regex) == null
+                && author.match(/(object Object|translation|discord)/gi) == null
+                && author.match(/[a-zA-Z]/) != null
+            ) {
+              author = author.match(/(?<= by )(.*)/i)?.[0] || author;
+              author = author.match(/(?<= from )(.*)/i)?.[0] || author;
+              author = author.match(/(.*)(?=#)/i)?.[0] || author;
+              author = author.trim();
+              if (!(
+                    this.$func.ciIncludes(authors, author.replace("@", ""))
+                || (author.includes("@") && author.includes("."))
+              )) {
+                authors.push(author.replace("@", "").replace(/^\w/, c => c.toUpperCase()));
+              }
+            }
+          });
+        }
+      });
+      return authors;
+    }
+
   },
 
   mounted() {
@@ -388,6 +446,7 @@ export default {
         this.items = this.items.concat(response.data.packages);
         this.languages = this.getLanguages();
         this.systemFilter = this.getSystems();
+        this.authors = this.getAuthors();
 
     })
 

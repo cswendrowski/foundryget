@@ -33,4 +33,9 @@ export const func = {
     return lang;
   },
 
+  ciIncludes: (value, query) => {
+    if (query.length === 0) { return true; }
+    return value.toString().toLowerCase().includes(query.toLowerCase());
+  },
+
 };
