@@ -2,7 +2,7 @@
 
 <div class="rel">
 	<lazy-component>
-		<v-card class="mx-auto" :ripple="false" @click="()=>{}">
+		<v-card class="mx-auto" :style="cssVars" :ripple="false" @click="()=>{getManifest()}">
 			<header class="pkg-header" :class="typeClass">
 				<v-card-title>{{ module.title }}</v-card-title>
 				<v-card-subtitle>
@@ -25,30 +25,39 @@
 					<p class="desc" v-html="module.description"></p>
 				</v-card-text>
 			</main>
-			<footer>
-				<v-card-text class="languages">
-					<v-chip class="languageChip" v-for="language in languages" :key="language">
-						<v-icon size="1.5em" left>mdi-translate</v-icon>
-						{{ language }}
-					</v-chip>
-				</v-card-text>
-				<v-btn text v-bind:href="module.url" target="_blank">
-					Project
-				</v-btn>
-				<v-btn text v-bind:href="foundryPackageUrl" target="_blank">
-					Package
-				</v-btn>
-				<v-btn text v-bind:href="module.manifest" target="_blank">
-					Manifest
-				</v-btn>
-				<v-card-text>
-				<!-- 
-					// not in forge api, should probably lazyload on expansion
-					<strong>Compatible Foundry Versions:</strong>
-					<span>v{{ module.minimumCoreVersion }} - v{{ module.compatibleCoreVersion }}</span>
-				-->
-				</v-card-text>
-			</footer>
+
+				<footer>
+					<resize-sensor @resize="footerResizeHandler"></resize-sensor>
+					<v-card-text class="languages">
+						<v-chip class="languageChip" v-for="language in languages" :key="language">
+							<v-icon size="1.5em" left>mdi-translate</v-icon>
+							{{ language }}
+						</v-chip>
+					</v-card-text>
+					<div>
+						<v-card-text class="dependencies" v-if="hasDependencies">
+							<strong>Dependencies:</strong>
+							<span v-for="dependency in manifest.dependencies" :key="dependency">
+								{{ dependency.name }}
+							</span>
+						</v-card-text>
+					</div>
+					<v-card-text class="compatibility">
+						<strong>Compatible Foundry Versions:</strong>
+						<span>v{{ manifest.minimumCoreVersion }} - v{{ manifest.compatibleCoreVersion }}</span>
+					</v-card-text>
+					<div class="cardButtonDiv">
+						<v-btn text v-bind:href="module.url" target="_blank">
+							Project
+						</v-btn>
+						<v-btn text v-bind:href="foundryPackageUrl" target="_blank">
+							Package
+						</v-btn>
+						<v-btn text v-bind:href="module.manifest" target="_blank">
+							Manifest
+						</v-btn>
+					</div>
+				</footer>
 		</v-card>
 	</lazy-component>
 </div>
@@ -56,12 +65,15 @@
 </template>
 
 <script>
+import axios from "axios";
 import ProgressRing from "./ProgressRing.vue";
+import ResizeSensor from "vue-resize-sensor";
 
 export default {
 	name: "Module",
 	components: {
-		ProgressRing
+		ProgressRing,
+		ResizeSensor
 	},
 	props: {
 		modules: Array,
@@ -71,7 +83,15 @@ export default {
 	data: () => ({
 		show: false,
 		loader: null,
-		loading: false
+		loading: false,
+		manifest: {
+			minimumCoreVersion: "?.?.?",
+			compatibleCoreVersion: "?.?.?",
+			dependencies: []
+		},
+		manifestLoaded: false,
+		hasDependencies: false,
+		footerHeight: 0,
 	}),
 
 	watch: {
@@ -119,10 +139,33 @@ export default {
 			const inst = Number(this.module.installs);
 			let pop = inst > 1 ? Math.round(inst) : "<1";
 			return pop;
-		}
+		},
+		cssVars() {
+			return {
+				'--footer-height': this.footerHeight + 'px'
+			}
+		},
 	},
 	methods: {
-		
+
+		getManifest() {
+			if (this.manifestLoaded) return;
+			this.manifestLoaded = true;
+			axios
+				.get(
+					"https://cors-anywhere.herokuapp.com/" +
+					this.module.manifest
+				)
+				.then(response => {
+					this.manifest = response.data;
+					if (response.data?.dependencies && response.data.dependencies?.length !== 0) this.hasDependencies = true;
+				})
+		},
+
+		footerResizeHandler(size) {
+			this.footerHeight = size.height;
+		}
+
 	}
 }
 </script>
@@ -159,8 +202,13 @@ $size-trans: $trans-dur height, $trans-dur width;
 	}
 }
 
+@keyframes scroll-fade-in {
+	from {height: 0;}
+	to {height: 6px;}
+}
+
 @mixin fancy-scroll {
-	&::-webkit-scrollbar { 
+	&::-webkit-scrollbar {
 		width: 6px;
 		height: 6px;
 		border-radius: 3px;
@@ -274,7 +322,7 @@ $size-trans: $trans-dur height, $trans-dur width;
 					left: 0;
 				}
 			}
-			
+
 			&::after {
 				content: " ";
 				position: absolute;
@@ -311,7 +359,7 @@ $size-trans: $trans-dur height, $trans-dur width;
 				color: var(--v-accent-lighten2);
 				border-bottom: 1px dashed var(--v-accent-lighten1);
 				margin-bottom: .5em;
-				
+
 				label {
 					color: var(--v-accent-lighten3);
 				}
@@ -327,15 +375,23 @@ $size-trans: $trans-dur height, $trans-dur width;
 			}
 		}
 		footer {
-			height: 0em;
+			max-height: 0em;
+			display: flex;
+			flex-wrap: wrap;
 			overflow: hidden;
-			transition: $size-trans;
+			transition: $trans-dur max-height, $trans-dur width;
 			background-color: var(--v-secondary-lighten1);
 			.v-chip {
 				font-size: 1em;
 			}
+			.v-card__text {
+				padding: 0;
+				> * {
+					margin: 16px;
+				}
+			}
 			.languages {
-				height: 4em;
+				max-height: 4em;
 				width: 96%;
 				margin-left: 2%;
 				white-space: nowrap;
@@ -343,19 +399,47 @@ $size-trans: $trans-dur height, $trans-dur width;
 					x: auto;
 				}
 				@include fancy-scroll;
+				.languageChip{
+					margin-right: 5px;
+				}
+			}
+			.cardButtonDiv {
+				display: flex;
+				overflow-x: hidden;
+				flex-wrap: nowrap;
+			}
+			> div {
+				width: 100%;
+			}
+			.dependencies,
+			.compatibility {
+				width: 96%;
+				margin-left: 2%;
+				white-space: nowrap;
+				overflow: hidden {
+					x: auto;
+				}
+				@include fancy-scroll;
+				&::-webkit-scrollbar {
+					height: 0;
+					animation-name: scroll-fade-in;
+					animation-duration: calc($trans-dur / 2);
+					animation-delay: $trans-dur;
+				}
 			}
 		}
 		&:focus,
 		&:focus-within {
 			width: 55ch;
-			height: 26em;
+			height: calc(20em + var(--footer-height));
 			animation: $trans-dur open;
 			z-index: 1;
 			box-shadow: 0 3px 5px 2px #000000a6;
 			transition: $trans-dur box-shadow, $size-trans;
 
 			footer {
-				height: 6em;
+				max-height: unset;
+				min-height: 6em;
 			}
 			main {
 				height: 15em;
@@ -383,9 +467,6 @@ $size-trans: $trans-dur height, $trans-dur width;
 			opacity: .08;
 		}
 	}
-	
-}
-span.languageChip {
-	margin-right: 5px;
+
 }
 </style>
