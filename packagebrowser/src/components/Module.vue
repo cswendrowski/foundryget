@@ -423,7 +423,7 @@ $size-trans: $trans-dur height, $trans-dur width;
 				&::-webkit-scrollbar {
 					height: 0;
 					animation-name: scroll-fade-in;
-					animation-duration: calc($trans-dur / 2);
+					animation-duration: calc(#{$trans-dur} / 2);
 					animation-delay: $trans-dur;
 				}
 			}
