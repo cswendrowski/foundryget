@@ -412,7 +412,7 @@ export default {
                     this.$func.ciIncludes(authors, author.replace("@", ""))
                 || (author.includes("@") && author.includes("."))
               )) {
-                authors.push(author.replace("@", "").replace(/^\w/, c => c.toUpperCase()));
+                authors.push(author.replace("@", ""));
               }
             }
           });
