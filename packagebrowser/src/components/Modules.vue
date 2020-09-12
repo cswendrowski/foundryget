@@ -397,11 +397,11 @@ export default {
       let authors = [];
       this.modules.forEach(module => {
         if (module.author && module.author?.length !== 0) {
-          const regex = /(,|\[|\]|\(|\)|<|>|-|–|\/|[^ps]:| and | maintained by )/gi;
+          const regex = /(,|\[|\]|\(|\)|<|>|-|–|[^/:]\/|[^ps]:| and | maintained by )/gi;
           module.author.split(regex).forEach(author => {
             if (typeof author !== "object"
                 && author.match(regex) == null
-                && author.match(/(object Object|translation|discord)/gi) == null
+                && author.match(/(object Object|translation|discord|https?:\/\/)/gi) == null
                 && author.match(/[a-zA-Z]/) != null
             ) {
               author = author.split(" by ")?.[1] || author;
