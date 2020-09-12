@@ -19,37 +19,29 @@
             </v-card-text>
 
             <v-card-text>
-              <h2 class="title mb-2">Languages</h2>
-
-              <v-chip-group
+              <v-autocomplete
                 v-model="filter.languages"
-                column
+                :items="languages"
+                outlined
+                dense
+                chips
+                small-chips
+                label="Languages"
                 multiple
-              >
-                <v-chip
-                  v-for="language in languages"
-                  :key="language"
-                  filter
-                  outlined
-                >{{language}}</v-chip>
-              </v-chip-group>
+              ></v-autocomplete>
             </v-card-text>
 
             <v-card-text>
-              <h2 class="title mb-2">Systems</h2>
-
-              <v-chip-group
+              <v-autocomplete
                 v-model="filter.systems"
-                column
+                :items="systemFilter"
+                outlined
+                dense
+                chips
+                small-chips
+                label="Systems"
                 multiple
-              >
-                <v-chip
-                  v-for="system in systemFilter"
-                  :key="system"
-                  filter
-                  outlined
-                >{{system}}</v-chip>
-              </v-chip-group>
+              ></v-autocomplete>
             </v-card-text>
 
           </v-navigation-drawer>
@@ -364,11 +356,11 @@ export default {
           });
         }
       });
-      return languages;
+      return languages.sort(Intl.Collator().compare);
     },
 
     getSystems() {
-      let systems = ["System Agnostic"];
+      let systems = [];
       this.modules.forEach(module => {
         if (module.systems && module.systems.length !== 0) {
           module.systems.forEach(system => {
@@ -382,7 +374,9 @@ export default {
           });
         }
       });
-      return systems;
+      systems = systems.sort(Intl.Collator().compare)
+      systems.unshift("System Agnostic")
+      return systems
     },
 
     getSystem(systemId) {
@@ -418,7 +412,7 @@ export default {
           });
         }
       });
-      return authors;
+      return authors.sort(Intl.Collator().compare);
     }
 
   },
