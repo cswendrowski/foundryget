@@ -15,7 +15,7 @@
                 small-chips
                 label="Authors"
                 multiple
-              ></v-autocomplete>
+              />
             </v-card-text>
 
             <v-card-text>
@@ -28,7 +28,7 @@
                 small-chips
                 label="Languages"
                 multiple
-              ></v-autocomplete>
+              />
             </v-card-text>
 
             <v-card-text>
@@ -41,7 +41,7 @@
                 small-chips
                 label="Systems"
                 multiple
-              ></v-autocomplete>
+              />
             </v-card-text>
 
           </v-navigation-drawer>
@@ -71,9 +71,9 @@
               solo-inverted
               hide-details
               label="Search"
-            ></v-text-field>
+            />
             <template v-if="$vuetify.breakpoint.mdAndUp">
-              <v-spacer></v-spacer>
+              <v-spacer />
               <v-select
                 v-model="sortBy"
                 flat
