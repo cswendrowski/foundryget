@@ -1,8 +1,15 @@
 <template>
 
 <div class="rel">
-	<v-lazy>
-		<div>
+	<!-- add some kind of higher box so loader loads before the module loading gets shown -->
+	<!-- <v-lazy>
+	<v-progress-circular v-if="!isActive" indeterminate size="64" />
+	</v-lazy> -->
+	<v-lazy
+		transition="fade-transition"
+		v-model="isActive"
+	>
+		<div v-if="isActive">
 			<module-overlay
 				v-bind:overlayState="overlay"
 				v-on:click="overlay = $event"
@@ -92,6 +99,7 @@ export default {
 	},
 
 	data: () => ({
+		isActive: false,
 		show: false,
 		loader: null,
 		loading: false,
