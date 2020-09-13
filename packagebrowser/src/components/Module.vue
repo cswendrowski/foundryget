@@ -1,65 +1,74 @@
 <template>
 
 <div class="rel">
-	<lazy-component>
-		<v-card class="mx-auto" :style="cssVars" :ripple="false" @click="()=>{getManifest()}">
-			<header class="pkg-header" :class="typeClass">
-				<v-card-title>{{ module.title }}</v-card-title>
-				<v-card-subtitle>
-					<span class="pkg-type">{{module.type}}</span>
-					-
-					<span class="pkg-ver">v{{ module.latest }}</span>
-					<span class="popularity">
-						<progress-ring :radius="25" :progress="installs" :stroke="3"/>
-						<label>Users</label>
-						<span>{{ popularity }}%</span>
-					</span>
-				</v-card-subtitle>
-			</header>
-			<main>
-				<v-card-text style="padding-top: 10px;">
-					<h4 class="author">
-						<label>Author(s): </label>
-						<span>{{ module.author }}</span>
-					</h4>
-					<p class="desc" v-html="module.description"></p>
-				</v-card-text>
-			</main>
+	<v-lazy>
+		<div>
+			<module-overlay
+				v-bind:overlayState="overlay"
+				v-on:click="overlay = $event"
+			/>
+			<v-card class="mx-auto" :style="cssVars" :ripple="false" @click="()=>{getManifest()}">
+				<header class="pkg-header" :class="typeClass">
+					<v-card-title>{{ module.title }}</v-card-title>
+					<v-card-subtitle>
+						<span class="pkg-type">{{module.type}}</span>
+						-
+						<span class="pkg-ver">v{{ module.latest }}</span>
+						<span class="popularity">
+							<progress-ring :radius="25" :progress="installs" :stroke="3"/>
+							<label>Users</label>
+							<span>{{ popularity }}%</span>
+						</span>
+					</v-card-subtitle>
+				</header>
+				<main>
+					<v-card-text style="padding-top: 10px;">
+						<h4 class="author">
+							<label>Author(s): </label>
+							<span>{{ module.author }}</span>
+						</h4>
+						<p class="desc" v-html="module.description"></p>
+					</v-card-text>
+				</main>
 
-				<footer>
-					<resize-sensor @resize="footerResizeHandler"></resize-sensor>
-					<v-card-text class="languages">
-						<v-chip class="languageChip" v-for="language in languages" :key="language">
-							<v-icon size="1.5em" left>mdi-translate</v-icon>
-							{{ language }}
-						</v-chip>
-					</v-card-text>
-					<div>
-						<v-card-text class="dependencies" v-if="hasDependencies">
-							<strong>Dependencies:</strong>
-							<span v-for="dependency in manifest.dependencies" :key="dependency">
-								{{ dependency.name }}
-							</span>
+					<footer>
+						<resize-sensor @resize="footerResizeHandler"></resize-sensor>
+						<v-card-text class="languages">
+							<v-chip class="languageChip" v-for="language in languages" :key="language">
+								<v-icon size="1.5em" left>mdi-translate</v-icon>
+								{{ language }}
+							</v-chip>
 						</v-card-text>
-					</div>
-					<v-card-text class="compatibility">
-						<strong>Compatible Foundry Versions:</strong>
-						<span>v{{ manifest.minimumCoreVersion }} - v{{ manifest.compatibleCoreVersion }}</span>
-					</v-card-text>
-					<div class="cardButtonDiv">
-						<v-btn text v-bind:href="module.url" target="_blank">
-							Project
-						</v-btn>
-						<v-btn text v-bind:href="foundryPackageUrl" target="_blank">
-							Package
-						</v-btn>
-						<v-btn text v-bind:href="module.manifest" target="_blank">
-							Manifest
-						</v-btn>
-					</div>
-				</footer>
-		</v-card>
-	</lazy-component>
+						<div>
+							<v-card-text class="dependencies" v-if="hasDependencies">
+								<strong>Dependencies:</strong>
+								<span v-for="dependency in manifest.dependencies" :key="dependency">
+									{{ dependency.name }}
+								</span>
+							</v-card-text>
+						</div>
+						<v-card-text class="compatibility">
+							<strong>Compatible Foundry Versions:</strong>
+							<span>v{{ manifest.minimumCoreVersion }} - v{{ manifest.compatibleCoreVersion }}</span>
+						</v-card-text>
+						<div class="cardButtonDiv">
+							<v-btn text v-bind:href="module.url" target="_blank">
+								Project
+							</v-btn>
+							<v-btn text v-bind:href="foundryPackageUrl" target="_blank">
+								Package
+							</v-btn>
+							<v-btn text v-bind:href="module.manifest" target="_blank">
+								Manifest
+							</v-btn>
+							<v-btn text @click="overlay = !overlay">
+								Extra Info
+							</v-btn>
+						</div>
+					</footer>
+			</v-card>
+		</div>
+	</v-lazy>
 </div>
 
 </template>
@@ -68,12 +77,14 @@
 import axios from "axios";
 import ProgressRing from "./ProgressRing.vue";
 import ResizeSensor from "vue-resize-sensor";
+import ModuleOverlay from "./ModuleOverlay.vue";
 
 export default {
 	name: "Module",
 	components: {
 		ProgressRing,
-		ResizeSensor
+		ResizeSensor,
+		ModuleOverlay
 	},
 	props: {
 		modules: Array,
@@ -92,6 +103,7 @@ export default {
 		manifestLoaded: false,
 		hasDependencies: false,
 		footerHeight: 0,
+		overlay: false,
 	}),
 
 	watch: {

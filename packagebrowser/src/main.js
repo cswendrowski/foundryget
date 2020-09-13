@@ -2,7 +2,6 @@ import Vue from "vue";
 import { func } from "./util/helpers"
 import App from "./App.vue";
 import vuetify from "./plugins/vuetify";
-import './plugins/v-lazy-component';
 // import axios from "axios";
 
 
