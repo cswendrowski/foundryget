@@ -173,12 +173,23 @@ export default {
 			this.manifestLoaded = true;
 			axios
 				.get(
-					"https://cors-anywhere.herokuapp.com/" +
-					this.module.manifest
+					"https://forge-vtt.com/api/bazaar/manifest/" +
+					this.module.name
 				)
 				.then(response => {
 					this.manifest = response.data;
 					if (response.data?.dependencies && response.data.dependencies?.length !== 0) this.hasDependencies = true;
+				})
+				.catch(() => {
+					axios
+						.get(
+							"https://cors-anywhere.herokuapp.com/" +
+							this.module.manifest
+						)
+						.then(response => {
+							this.manifest = response.data;
+							if (response.data?.dependencies && response.data.dependencies?.length !== 0) this.hasDependencies = true;
+						})
 				})
 		},
 
